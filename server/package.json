@@ -9,7 +9,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.3",
-    "nanoid": "^5.0.7"
+    "nanoid": "^5.0.7",
+    "uuid": "^10.0.0"
   },
   "name": "server",
   "version": "1.0.0",

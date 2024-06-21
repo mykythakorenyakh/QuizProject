@@ -2,22 +2,26 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const cors = require('cors')
-const bodyParser = require('body-parser')
+
 const cookieParser = require('cookie-parser')
+
+const authRouter = require('./source/routers/authRouter.js')
+const bodyParser = require('body-parser')
 
 require('dotenv').config()
 
-
-
-
 const app = express()
 
-app.use(bodyParser.urlencoded({ extended: false }))
+
+
+app.use(bodyParser.json())
+app.use(express.urlencoded())
 app.use(cookieParser())
 app.use(cors({
     origin: '*',
 }))
 
+app.use('/auth',authRouter);
 
 
 
