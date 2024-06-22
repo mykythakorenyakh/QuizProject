@@ -14,6 +14,8 @@ const login = async (req, res) => {
 
         const { email, password } = req.body;
 
+        console.log(email)
+
         if (!email || !password) return statusService.forbidden(res);
 
         const applicant = await userDB.findOne({ email: email });

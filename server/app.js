@@ -20,7 +20,8 @@ app.use(bodyParser.json())
 app.use(express.urlencoded())
 app.use(cookieParser())
 app.use(cors({
-    origin: '*',
+    origin: process.env.FRONTEND,
+    credentials:true,
 }))
 
 app.use('/auth',authRouter);

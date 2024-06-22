@@ -1,9 +1,27 @@
 const quizDB = require('../models/quiz.js')
+const userDB = require('../models/user.js')
 const questionDB = require('../models/question.js')
 const statusService = require('../services/statusService.js')
 const tokenService = require('../services/tokenService.js')
 const uuid = require('uuid')
 
+
+//User Crud
+const getUser = async (req,res)=>{
+    try {   
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if(!userId) return statusService.forbidden(res);
+        const data = await userDB.findById(userId)
+        
+        if(!data)  return statusService.forbidden(res);
+
+        return res.json(data)
+        
+    } catch (error) {
+        console.error(`get user error`)
+        return statusService.forbidden(res);
+    }
+}
 
 //Quiz CRUD
 const createQuiz = async (req, res) => {
@@ -100,6 +118,7 @@ const getQuizes = async (req, res) => {
 
 
 module.exports = {
+    getUser,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
 
 }

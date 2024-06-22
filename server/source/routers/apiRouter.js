@@ -8,6 +8,10 @@ const router = Router();
 
 router.use(isAuthorized)
 
+//User CRUD
+router.get('/user',controller.getUser)
+
+
 //Quiz CRUD
 router.post('/quiz/create',controller.createQuiz)
 router.put('/quiz/update/:id',controller.updateQuiz)

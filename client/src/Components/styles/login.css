@@ -1,0 +1,93 @@
+
+
+form{
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap:3px;
+    background-color: #fcfcfc;
+    padding: 20px;
+
+    border-radius: 12px;
+    margin:auto;
+
+}
+
+form input{
+    padding: 3px;
+    border-radius: 6px;
+    font-size: 18px;
+}
+
+form .requirement{
+    display: none;
+    margin-bottom: 15px;
+    background-color: #223a;
+    word-wrap: normal;
+    padding: 5px;
+    font-size: 14px;
+}
+
+form .requirement.on{
+    display: block;
+}
+
+form .save{
+    display: flex;
+    gap:5px;
+    align-items: end;
+}
+.save input{
+    width:18px;
+    height: 18px;
+    outline: none;
+    cursor: pointer;
+}
+
+form button{
+    padding: 5px;
+    width:150px;
+    border-radius: 6px;
+    background-color: #348a;
+    cursor: pointer;
+    align-self: center;
+}
+
+.error{
+    color:#911a;
+    margin-top: 10px;
+
+}
+.error::before{
+    content: '⚠';
+    color:#f00;
+    font-weight: 100;
+    font-size: 20px;
+}
+
+
+
+.board{
+    display: flex;
+    border-radius: 12px; 
+    width:400px;
+    
+    margin:auto;
+    background-color: #fcfcfc;
+    padding: 30px;
+    flex-direction: column;
+}
+.board h2{
+    font-size: 32px;
+
+}
+.board p{
+    margin-top: 20px;
+}
+
+.link{
+    color: #34f;
+    user-select: none;
+    cursor: pointer;
+    margin-top: 5px;
+}
