@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+
+    font-family: "Josefin Sans", sans-serif;
+    color:#222;
+    font-size: 16px;
+    
+}
+
+html{
+    width:100%;
+}
+.body{
+    min-width: 100%;
+    min-height: 100vh;
+}
+
+#root{
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    min-height: 100vh;
+    background-color: #238;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Scoll */
+*::-webkit-scrollbar{
+  width: 2px;
+  
+}
+*::-webkit-scrollbar-track {
+  background:transparent;
+}
+ 
+*::-webkit-scrollbar-thumb {
+  background: #1127;
+  border-radius: 10px;
+}
+
+
+input:focus{
+  outline:1px solid #234;
+  outline-style:dotted;
+}
+
+header{
+  display: flex;
+  position: fixed;
+  height: 80px;
+  background-color: #fcfcfc;
+  width:100%;
+  justify-content: space-between;
+  align-items: center;
+  
+  flex-direction: row;
+  box-shadow: 0px 3px 10px #223;
+
+}
+
+.logo img{
+  width: 60px;
+  margin-left: 10px;
+}
+
+.navs{
+  display: flex;
+  gap:30px;
+  margin-right:20px;
+  
+}
+.navs .nav{
+  font-weight: 600;
+  user-select: none;
+  cursor: pointer;
+}
+.navs .nav.index{
+  color:#238;
+  font-weight: 900;
+}

@@ -1,6 +1,10 @@
 const {Schema,model} = require('mongoose')
 
 const quizSchema = new Schema({
+    userId:{
+        type:String,
+        required:true,
+    },
     title:{
         type:String,
         required:true,

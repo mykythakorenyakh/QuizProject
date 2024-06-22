@@ -24,12 +24,10 @@ const questionSchema = new Schema({
     },
     timeLimit:{
         string:Number,
-        default:0,
     },
     required:{
         string:Boolean,
-        default:false,
-    }
+    },
 })
 
 module.exports = model('question',questionSchema)

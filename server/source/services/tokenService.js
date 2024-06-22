@@ -6,11 +6,11 @@ const { options } = require('../routers/authRouter')
 
 const generateTokens = async (userId) => {
     try {
-        const refresh = jwt.sign({ Id: userId }, process.env.REFRESH_KEY, {
+        const refresh = jwt.sign({ id: userId }, process.env.REFRESH_KEY, {
             expiresIn: '2d',
         })
-        const access = jwt.sign({ Id: userId }, process.env.ACCESS_KEY, {
-            expiresIn: '10s',
+        const access = jwt.sign({ id: userId }, process.env.ACCESS_KEY, {
+            expiresIn: '5m',
         })
 
        

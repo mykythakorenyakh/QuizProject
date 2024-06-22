@@ -21,6 +21,8 @@ const login = async (req, res) => {
         if (!applicant) return statusService.forbidden(res);
         if (!bcrypt.compareSync(password, applicant.password)) return statusService.forbidden(res);
 
+        if (!applicant.activated) return statusService.unauthorized(res);
+
         console.log("User's info:")
         console.log(applicant);
         console.log("========------------========");
@@ -110,10 +112,14 @@ const activate = async (req, res) => {
 const refresh = async (req, res) => {
     try {
         const refresh = req.cookies.token;
+
+        
         if (!refresh) return statusService.unauthorized(res)
-
+            
         const data = await tokenDB.findOne({ token: refresh });
-
+        
+        console.log(refresh)
+        console.log(data)
 
 
         const verify = await tokenService.verifyRefresh(refresh)
@@ -127,6 +133,8 @@ const refresh = async (req, res) => {
         const tokens = await tokenService.generateTokens(data.userId);
         console.log(tokens)
 
+        res.cookie('token', tokens.refresh, { httpOnly: true, maxAge: 2 * 24 * 60 * 60 * 60 * 1000 });
+
         return res.send(tokens.access);
 
 
@@ -135,19 +143,21 @@ const refresh = async (req, res) => {
     }
 }
 
-
+//Middlewere
 const isAuthorized = async (req, res, next) => {
     try {
         const access = req.headers.authorization.split(' ')[1];
         const refresh = req.cookies.token;
         if (!refresh || !access) return statusService.unauthorized(res)
-
+            
         const validAccess = await tokenService.verifyAccess(access);
         if (!validAccess) return statusService.unauthorized(res);
-
-        const validRefersh = await tokenService.verifyRefresh(access);
+            
+        const validRefersh = await tokenService.verifyRefresh(refresh);
         if (!validRefersh) return statusService.unauthorized(res);
-
+            
+        console.log('here')
+        
         next();
 
 
@@ -158,5 +168,6 @@ const isAuthorized = async (req, res, next) => {
 
 
 module.exports = {
-    login, register, logout, activate, refresh, isAuthorized,
+    login, register, logout, activate, refresh,
+    isAuthorized,
 }
