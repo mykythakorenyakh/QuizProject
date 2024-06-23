@@ -52,24 +52,26 @@ const updateQuiz = async (req, res) => {
     try {
         const quizid = req.params?.id;
         const { title, private, repeat, timeLimit, dateLimit, mixed } = req.body;
+        console.log(req.body)
         const quiz = await quizDB.findOne({ _id: quizid });
 
-
+        
         if (!quiz) return statusService.forbidden(res);
-
-
-
+        
+        
+        
         quiz.title = title;
         quiz.private = private;
         quiz.repeat = repeat;
         quiz.timeLimit = timeLimit;
         quiz.dateLimit = dateLimit;
         quiz.mixed = mixed;
-
+        
         quiz.updated = Date.now();
 
+        
         await quiz.save();
-
+        
         return res.json(quiz)
 
     } catch (error) {
@@ -91,7 +93,7 @@ const deleteQuiz = async (req, res) => {
 const getQuiz = async (req, res) => {
     try {
         const quizid = req.params?.id;
-        const quiz = await quizDB.findById(quizid)
+        const quiz = await quizDB.findOne({urlid:quizid})
 
         return res.json(quiz)
 

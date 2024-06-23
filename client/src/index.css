@@ -82,14 +82,48 @@ header{
   display: flex;
   gap:30px;
   margin-right:20px;
+  align-items: center;
   
 }
 .navs .nav{
   font-weight: 600;
+  font-size: 20px;
   user-select: none;
   cursor: pointer;
+  text-decoration: none;
 }
 .navs .nav.index{
   color:#238;
   font-weight: 900;
+}
+
+
+.popup{
+  display: flex;
+  position: absolute;
+  width:100%;
+  height: 100%;
+  background-color: #2235;
+  z-index: 1;
+}
+.popup-form{
+  display: flex;
+  flex-direction: column;
+  padding:15px;
+  border-radius: 12px;
+  background-color: #fcfcfc;
+  gap:10px;
+}
+.popup-form h2{
+  font-size:24px;
+  color: #223;
+}
+.popup-form p{
+  font-size:18px;
+  color: #223;
+}
+.popup-form input[type='text']{
+  font-size:20px;
+  padding: 3px;
+  color: #223;
 }

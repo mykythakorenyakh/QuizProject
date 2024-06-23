@@ -5,18 +5,22 @@ import RegisterForm from "./Components/RegisterForm";
 
 import AuthRequire from './Layouts/AuthRequire'
 import AuthPersist from "./Layouts/AuthPersist";
-import AccountInfo from './Components/AccountInfo'
 import ZeroPage from "./Pages/ZeroPage";
+import EditorPage from "./Pages/EditorPage";
+import AccountPage from "./Pages/AccountPage";
 
+import Header from "./Layouts/Header";
+
+import DashboardPage from "./Pages/DashboardPage";
 
 
 function App() {
   return (
     <BrowserRouter>
-  
+
       <Routes>
 
-        <Route path="*" element={<ZeroPage/>}/>
+        <Route path="*" element={<ZeroPage />} />
 
 
         <Route path='auth'>
@@ -26,9 +30,17 @@ function App() {
 
         <Route element={<AuthPersist></AuthPersist>}>
           <Route element={<AuthRequire></AuthRequire>}>
-            <Route path="/account" element={<AccountInfo />} />
+
+            <Route element={<Header></Header>}>
+              <Route path="/account" element={<AccountPage />} />
+              <Route path="/editor" element={<EditorPage />} />
+              <Route path="/dashboard/:url" element={<DashboardPage />} />
+            </Route>
+
+
           </Route>
         </Route>
+
       </Routes>
 
     </BrowserRouter>

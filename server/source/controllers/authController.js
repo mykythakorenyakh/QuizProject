@@ -14,7 +14,6 @@ const login = async (req, res) => {
 
         const { email, password } = req.body;
 
-        console.log(email)
 
         if (!email || !password) return statusService.forbidden(res);
 
@@ -24,10 +23,6 @@ const login = async (req, res) => {
         if (!bcrypt.compareSync(password, applicant.password)) return statusService.forbidden(res);
 
         if (!applicant.activated) return statusService.unauthorized(res);
-
-        console.log("User's info:")
-        console.log(applicant);
-        console.log("========------------========");
 
         const tokens = await tokenService.generateTokens(applicant._id);
 
@@ -79,7 +74,7 @@ const logout = async (req, res) => {
         const refresh = req.cookies.token;
 
         const data = await tokenDB.deleteOne({ token: refresh });
-        console.log(data);
+        
         res.clearCookie('token');
         return res.send('Logged out');
     } catch (err) {
@@ -91,7 +86,6 @@ const activate = async (req, res) => {
     try {
 
         const { code } = req.params;
-        console.log(code)
 
         const activation = await activationDB.findOne({ url: code })
         if (!activation) return statusService.forbidden(res);
@@ -120,8 +114,6 @@ const refresh = async (req, res) => {
             
         const data = await tokenDB.findOne({ token: refresh });
         
-        console.log(refresh)
-        console.log(data)
 
 
         const verify = await tokenService.verifyRefresh(refresh)
@@ -133,7 +125,6 @@ const refresh = async (req, res) => {
 
 
         const tokens = await tokenService.generateTokens(data.userId);
-        console.log(tokens)
 
         res.cookie('token', tokens.refresh, { httpOnly: true, maxAge: 2 * 24 * 60 * 60 * 60 * 1000 });
 
@@ -158,8 +149,6 @@ const isAuthorized = async (req, res, next) => {
         const validRefersh = await tokenService.verifyRefresh(refresh);
         if (!validRefersh) return statusService.unauthorized(res);
             
-        console.log('here')
-        
         next();
 
 

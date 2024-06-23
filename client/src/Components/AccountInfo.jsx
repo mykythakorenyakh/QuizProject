@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import style from './styles/account.css'
+
 
 import useUser from '../Hooks/useUser'
 import useApiPrivate from '../Hooks/useApiPrivate'
@@ -8,41 +8,35 @@ import useApiPrivate from '../Hooks/useApiPrivate'
 const AccountInfo = () => {
     const api = useApiPrivate()
     const [loading,setLoading] = useState(true)
-    const [email, setEmail] = useState()
+    const [email, setEmail] = useState('')
     
     useEffect(()=>{
         async function fetchData(){
             const data = (await api.get('/api/user')).data
             setEmail(data.email);
-            console.log(data)
         }
         fetchData()
     },[])
 
 
     return (
-        <div className="container">
-
-            <div className="tabs">
-                <div className="tab ">Account</div>
-                <div className="tab current">Notifications</div>
-            </div>
+        
 
             <div className="section selected">
                 <div className="info">
                     <img src="./assets/no-image.jpg" className="avatar" />
                     <form className="details">
                         <label htmlFor="email">Change Email</label>
-                        <input type="email" name="email" placeholder="Email" value={email}/>
+                        <input type="email" name="email" placeholder="Email" defaultValue={email}/>
 
                         <label htmlFor="name">Change Name</label>
-                        <input type="text" name="name" placeholder="Name" />
+                        <input type="text" name="name" placeholder="Name" defaultValue=''/>
 
                         <label htmlFor="number">Change Number</label>
-                        <input type="number" name="number" placeholder="Number" />
+                        <input type="number" name="number" placeholder="Number" defaultValue=''/>
 
 
-                        <button>Change Password</button>
+                        <button type="submit">Change Password</button>
 
 
 
@@ -55,7 +49,7 @@ const AccountInfo = () => {
                 </div>
             </div>
 
-        </div>
+        
 
     )
 }
