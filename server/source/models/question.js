@@ -19,14 +19,14 @@ const questionSchema = new Schema({
         default:'',
     },
     options:{
-        type:Buffer,
+        type:Object,
         required:true,
     },
     timeLimit:{
-        string:Number,
+        type:Number,
     },
     required:{
-        string:Boolean,
+        type:Boolean,
     },
 })
 

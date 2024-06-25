@@ -21,11 +21,12 @@ router.get('/quiz/:id',controller.getQuiz)
 router.get('/quizes',controller.getQuizes)
 
 //Questions CRUD
-router.post('/qestion/create/:type')
-router.put('/qestion/update/:id')
-router.delete('/qestion/delete/:id')
+router.post('/question/create/:url/:type',controller.createQuestion)
+router.put('/question/update',controller.updateQuestion)
+router.delete('/question/delete/:id',controller.deleteQuestion)
+router.get('/question/:id',controller.getQuestion)
 
-router.get('/qestions/:quizid')
+router.get('/questions/:url',controller.getQuestions)
 
 
 

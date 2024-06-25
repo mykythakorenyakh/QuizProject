@@ -12,6 +12,7 @@ import AccountPage from "./Pages/AccountPage";
 import Header from "./Layouts/Header";
 
 import DashboardPage from "./Pages/DashboardPage";
+import QuestionsPage from "./Pages/QuestionsPage";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
               <Route path="/account" element={<AccountPage />} />
               <Route path="/editor" element={<EditorPage />} />
               <Route path="/dashboard/:url" element={<DashboardPage />} />
+              <Route path="/questions/:url" element={<QuestionsPage />} />
             </Route>
 
 

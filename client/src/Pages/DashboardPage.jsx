@@ -39,7 +39,6 @@ const DashboardPage = () => {
         
     }, [])
 
-
     const changeTitle = async (newTitle)=>{
         try {
             const data = (await api.put(`/api/quiz/update/${quiz._id}`,{   
@@ -51,7 +50,6 @@ const DashboardPage = () => {
             console.error('Something went wrong')
         }
     }
-
     const changeStatus= async()=>{
         try {
             const data = (await api.put(`/api/quiz/update/${quiz._id}`,{   
@@ -63,7 +61,6 @@ const DashboardPage = () => {
             console.error('Something went wrong')
         }
     }
-
     const changeRepeat= async (newRepeat)=>{
         try {
             const data = (await api.put(`/api/quiz/update/${quiz._id}`,{   
@@ -75,7 +72,6 @@ const DashboardPage = () => {
             console.error('Something went wrong')
         }
     }
-
     const changeLimit = async (newLimit)=>{
         try {
             const data = (await api.put(`/api/quiz/update/${quiz._id}`,{   
@@ -110,6 +106,10 @@ const DashboardPage = () => {
         } catch (error) {
             console.error('Something went wrong')
         }
+    }
+
+    const toQuestions = ()=>{
+        navigate(`/questions/${quiz.urlid}`)
     }
 
     return (
@@ -153,7 +153,7 @@ const DashboardPage = () => {
                     </div>
                     <div className="horizontal-container">
                         <div className="amount">228</div>
-                        <button className="to-questions">Go to Questions Editor</button>
+                        <button className="to-questions" onClick={()=>toQuestions()}>Go to Questions Editor</button>
                     </div>
                 </div>
 

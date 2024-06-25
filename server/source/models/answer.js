@@ -8,6 +8,15 @@ module.exports = class Answer{
         this.img = img;
         this.weight = weight;
     }
+
+    ToJson() {
+        return {
+            text:this.text,
+            img:this.img,
+            weight:this.weight
+        }
+    }
+
 }
 
 
