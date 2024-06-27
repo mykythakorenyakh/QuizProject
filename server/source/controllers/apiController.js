@@ -8,6 +8,8 @@ const statusService = require('../services/statusService.js')
 const tokenService = require('../services/tokenService.js')
 const uuid = require('uuid')
 
+const imageService = require('../services/imageService.js')
+
 
 //User Crud
 const getUser = async (req, res) => {
@@ -135,26 +137,26 @@ const createQuestion = async (req, res) => {
         if (type === 'radio' || type === 'check') {
             options = [
                 {
-                    id:0,
-                    text:'option 1',
-                    image:'',
-                    weight:'1'
+                    id: 0,
+                    text: 'option 1',
+                    image: '',
+                    weight: '1'
                 },
                 {
-                    id:1,
-                    text:'option 2',
-                    image:'',
-                    weight:'0'
+                    id: 1,
+                    text: 'option 2',
+                    image: '',
+                    weight: '0'
                 },
             ]
-            
+
         }
         if (type === 'text' || type === 'number') {
             options = {
-                id:0,
-                text:'',
-                image:'',
-                weight:''
+                id: 0,
+                text: '',
+                image: '',
+                weight: ''
             }
         }
 
@@ -197,20 +199,32 @@ const updateQuestion = async (req, res) => {
     try {
         const question = req.body;
 
+        //console.log(req.body.image)
+
+
         if (!question) statusService.forbidden(res);
 
-        
+
         const oldQuestion = await questionDB.findById(question._id);
-        
+
         if (!oldQuestion) return statusService.forbidden(res);
-        
-        
+
+        var image = imageService.initImage(req.body.image)
+
+        var options = req.body.options;
+        if (oldQuestion.type === 'radio' || oldQuestion.type === 'check') {
+            var options = req.body.options.map((item) => {
+                item.image = imageService.initImage(item.image)
+                return item;
+            })
+        }
+
         oldQuestion.text = question.text;
-        oldQuestion.image = question.image;
+        oldQuestion.image = image;
         oldQuestion.options = question.options;
-        oldQuestion.timeLimit = question.timeLimit?question.timeLimit:0;
+        oldQuestion.timeLimit = question.timeLimit ? question.timeLimit : 0;
         oldQuestion.required = question.required;
-        
+
         await oldQuestion.save();
 
         return res.json(oldQuestion);
@@ -259,5 +273,5 @@ const getQuestion = async (req, res) => {
 module.exports = {
     getUser,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
-    createQuestion, updateQuestion, deleteQuestion, getQuestions,getQuestion
+    createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion
 }

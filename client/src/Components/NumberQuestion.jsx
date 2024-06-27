@@ -3,6 +3,12 @@ import React from 'react'
 import useApiPrivate from '../Hooks/useApiPrivate'
 import { useEffect, useRef, useState } from 'react'
 
+import { IoImageOutline } from "react-icons/io5";
+import { IoMdCloseCircleOutline } from "react-icons/io";
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const NumberQuestion = ({ remove,isDelete,questionId, index }) => {
 
     const api = useApiPrivate()
@@ -16,6 +22,9 @@ const NumberQuestion = ({ remove,isDelete,questionId, index }) => {
     const timeLimit = useRef()
     const required = useRef()
 
+    
+    const [image, setImage] = useState(null)
+
 
     const Update = async () => {
         const data = (await api.get(`/api/question/${questionId}`)).data;
@@ -28,6 +37,7 @@ const NumberQuestion = ({ remove,isDelete,questionId, index }) => {
         timeLimit.current.value = data[0].timeLimit;
         required.current.checked = data[0].required;
 
+        setImage(data[0].image)
     }
 
     useEffect(() => {
@@ -41,7 +51,7 @@ const NumberQuestion = ({ remove,isDelete,questionId, index }) => {
         const data = (await api.put(`/api/question/update`, {
             _id: questionId,
             text: text.current.value,
-            image: '',
+            image: image,
             options: {
                 id:0,
                 text:answer.current.value || "",
@@ -53,6 +63,98 @@ const NumberQuestion = ({ remove,isDelete,questionId, index }) => {
         }))
         console.log(required.current?.checked);
 
+    }
+
+        
+    const uploadImage = async (e) => {
+
+
+        console.log(e.target.files[0])
+
+        if(e.target.files[0].size>4194304){
+            toast.error('Media is to big! (4MB Maximum)', {
+                position: "bottom-center",
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+
+        if (e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const base64String = e.target.result;
+
+                const data = (await api.put(`/api/question/update`, {
+                    _id: questionId,
+                    text: text.current.value,
+                    image: base64String,
+                    options: {
+                        id:0,
+                        text:answer.current.value || "",
+                        image:'',
+                        weight:weight.current.value || 0
+                    },
+                    timeLimit: timeLimit.current?.value || 0,
+                    required: (required.current?.checked ? true : false),
+                })).data
+                console.log(data.image)
+                setImage(data.image)
+
+                toast.success('Image has been uploaded!', {
+                    position: "bottom-center",
+                    autoClose: 1500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+
+    }
+    const imageConvert = (image) => {
+        if (typeof image === 'string') return image;
+        return URL.createObjectURL(image);
+    }
+    const deleteImage = async () => {
+        const data = (await api.put(`/api/question/update`, {
+            _id: questionId,
+            text: text.current.value,
+            image: {
+                action: 'delete',
+                data: image,
+            },
+            options: {
+                id:0,
+                text:answer.current.value || "",
+                image:'',
+                weight:weight.current.value || 0
+            },
+            timeLimit: timeLimit.current?.value || 0,
+            required: (required.current?.checked ? true : false),
+        }))
+        setImage(null)
+        toast.info('Image has been deleted!', {
+            position: "bottom-center",
+            autoClose: 1500,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
     }
 
 
@@ -70,9 +172,17 @@ const NumberQuestion = ({ remove,isDelete,questionId, index }) => {
                 <div className="quote">
                     <textarea placeholder="Enter question here..." ref={text} onBlur={() => change()}></textarea>
                     <div className="image-area">
-                        <img className="empty-image " src="https://cdn-icons-png.flaticon.com/256/1160/1160358.png" />
-                        <img className="image hide"
-                            src="https://static.displate.com/270x380/displate/2024-02-01/ac39f43f05e45b9666e929ba83e6eba1_fe997e109168f39e6d3f4b20f20cf5e1.jpg" />
+                        {!image ?
+                            <div className="empty-image ">
+                                <input type='file' accept="image/*" onChange={(e) => uploadImage(e)} />
+                                <IoImageOutline size={100} />
+                            </div>
+                            : <div className="image" onClick={() => deleteImage()}>
+                                <img src={imageConvert(image)} />
+                                <IoMdCloseCircleOutline className='delete-image' size={100} />
+                            </div>
+
+                        }
                     </div>
                 </div>
                 <div className="quote-header">
