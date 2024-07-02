@@ -13,6 +13,7 @@ import Header from "./Layouts/Header";
 
 import DashboardPage from "./Pages/DashboardPage";
 import QuestionsPage from "./Pages/QuestionsPage";
+import QuizPage from "./Pages/QuizPage";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
               <Route path="/questions/:url" element={<QuestionsPage />} />
             </Route>
 
+            <Route path="/quiz/:url" element={<QuizPage />} />
 
           </Route>
         </Route>

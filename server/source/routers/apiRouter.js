@@ -28,7 +28,8 @@ router.get('/question/:id',controller.getQuestion)
 
 router.get('/questions/:url',controller.getQuestions)
 
-
+router.post('/quiz/start',controller.startQuiz)
+router.post('/quiz/result',controller.setResult)
 
 
 module.exports = router;

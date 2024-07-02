@@ -1,6 +1,8 @@
 const quizDB = require('../models/quiz.js')
 const userDB = require('../models/user.js')
 const questionDB = require('../models/question.js')
+const transitQuizDB = require('../models/transitQuiz.js')
+const resultsDB = require('../models/transitQuiz.js')
 
 const { Answer } = require('../models/answer.js')
 
@@ -9,6 +11,8 @@ const tokenService = require('../services/tokenService.js')
 const uuid = require('uuid')
 
 const imageService = require('../services/imageService.js')
+const quiz = require('../models/quiz.js')
+const { request } = require('http')
 
 
 //User Crud
@@ -270,8 +274,61 @@ const getQuestion = async (req, res) => {
 }
 
 
+//Quiz Results
+const startQuiz=async(req,res)=>{
+    try {
+        const { urlid } = req.body;
+
+        
+        const quiz = await quiz.findOne({urlid:urlid})
+        if(!quiz) statusService.forbidden(res);
+
+        const questions = await questionDB.findOne({quizId:quiz._id})
+        if(!questions) statusService.forbidden(res);
+
+
+
+        return res.json(questions)
+
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+
+
+}
+const setResult=async (req,res)=>{
+    try {
+        const { urlid } = req.body;
+       
+        const quiz = await quiz.findOne({urlid:urlid})
+        if(!quiz) statusService.forbidden(res);
+
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if (!userId) return statusService.forbidden(res);
+
+        const {passedDate,duration,score} = req.body;
+
+        const result = await resultsDB.create({
+            quizId:quiz._id,
+            userId:userId,
+            passedDate:passedDate,
+            duration:duration,
+            score:score,
+        })
+
+        return res.json(result);
+        
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
+
+
+
 module.exports = {
     getUser,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
-    createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion
+    createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion,
+    startQuiz,setResult
 }

@@ -112,6 +112,10 @@ const DashboardPage = () => {
         navigate(`/questions/${quiz.urlid}`)
     }
 
+    const toQuiz = (url)=>{
+        navigate(`/quiz/${url}`)
+    }
+
     return (
         
         !loading?
@@ -128,7 +132,7 @@ const DashboardPage = () => {
                     <div className="created">
                         {new Date(quiz.created).toLocaleDateString()}
                     </div>
-                    <div className="link">
+                    <div className="link" onClick={()=>toQuiz(quiz.urlid)}>
                         {quiz.urlid}
                     </div>
                     <div className="status" onClick={()=>changeStatus()}>
