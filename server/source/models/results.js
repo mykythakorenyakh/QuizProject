@@ -13,7 +13,7 @@ const resultSchema = new Schema({
     },
     passedDate:{
         type:Date,
-        default:()=>Date.now()
+        default:()=>Date.now(),
     },
     duration:{
         type:Number,

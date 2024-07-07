@@ -1,6 +1,9 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const QuizResult = () => {
+const QuizResult = ({score,correctAmount,questionsAmount}) => {
+    const navigate = useNavigate()
+
   return (
     <div className="results-container">
             <div class="results-header">
@@ -9,14 +12,14 @@ const QuizResult = () => {
 
             <div class="info">
                 <p>You passed this test in 12:00 / 30:00</p>
-                <p class="errors">You made <span>1</span> mistake!</p>
-                <p> <span>3 of 4 </span> correct asnwers!</p>
-                <p class="result">Result: <span>75%</span></p>
+                <p class="errors">You made <span>{questionsAmount-correctAmount}</span> mistake!</p>
+                <p> <span>{correctAmount} of {questionsAmount} </span> correct asnwers!</p>
+                <p class="result">Result: <span>{score?score.toFixed(1)+'%':'Fail'}</span></p>
             </div>
 
             <div class="footer">
 
-                <button>Exit</button>
+                <button onClick={()=>navigate('/')}>Exit</button>
             </div>
 
         </div>

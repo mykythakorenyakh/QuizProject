@@ -1,6 +1,6 @@
 import React from 'react'
 
-const QuizIntro = ({name,questionAmount,onStart}) => {
+const QuizIntro = ({name,questionAmount,timeLimit,onStart}) => {
   return (
     <div className="intro-container">
 
@@ -10,7 +10,7 @@ const QuizIntro = ({name,questionAmount,onStart}) => {
 
             <div className="info">
                 <p>This test consist of <span>{questionAmount}</span> questions.</p>
-                <p>You have unlimited amount of time to pass it.</p>
+                <p>{ !timeLimit? 'You have unlimited amount of time to pass it.': `You have ${timeLimit} minutes to pass it.`}</p>
                 <p className="warning">Closeing the test will cause to fail!</p>
 
             </div>

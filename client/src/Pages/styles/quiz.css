@@ -71,7 +71,7 @@
     width:600px;
     min-height:500px;  
     
-    
+    justify-content: space-between;
 
 }
 .test-header{
@@ -115,13 +115,13 @@
     color:#fcfcfcf1;
     
 }
-.question{
+.question-panel{
     display: flex;
     flex-direction: column;
     padding: 20px 50px;
 
 }
-.question img{
+.question-panel img{
     margin: 0 auto;
     max-width:400px;
     max-height: 400px;

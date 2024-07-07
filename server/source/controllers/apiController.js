@@ -1,8 +1,7 @@
 const quizDB = require('../models/quiz.js')
 const userDB = require('../models/user.js')
 const questionDB = require('../models/question.js')
-const transitQuizDB = require('../models/transitQuiz.js')
-const resultsDB = require('../models/transitQuiz.js')
+const resultsDB = require('../models/results.js')
 
 const { Answer } = require('../models/answer.js')
 
@@ -275,20 +274,25 @@ const getQuestion = async (req, res) => {
 
 
 //Quiz Results
-const startQuiz=async(req,res)=>{
+const startQuiz = async (req, res) => {
     try {
         const { urlid } = req.body;
 
-        
-        const quiz = await quiz.findOne({urlid:urlid})
-        if(!quiz) statusService.forbidden(res);
 
-        const questions = await questionDB.findOne({quizId:quiz._id})
-        if(!questions) statusService.forbidden(res);
+        const quiz = await quizDB.findOne({ urlid: urlid })
+        if (!quiz) statusService.forbidden(res);
 
 
 
-        return res.json(questions)
+        const questions = await questionDB.find({ quizId: quiz._id })
+        if (!questions) statusService.forbidden(res);
+
+
+
+        return res.json({
+            quiz,
+            questions
+        })
 
 
     } catch (error) {
@@ -297,29 +301,72 @@ const startQuiz=async(req,res)=>{
 
 
 }
-const setResult=async (req,res)=>{
+const setResult = async (req, res) => {
     try {
         const { urlid } = req.body;
-       
-        const quiz = await quiz.findOne({urlid:urlid})
-        if(!quiz) statusService.forbidden(res);
+
+        const quiz = await quizDB.findOne({ urlid: urlid })
+        if (!quiz) statusService.forbidden(res);
+
 
         const userId = tokenService.verifyRefresh(req.cookies.token)?.id
         if (!userId) return statusService.forbidden(res);
 
-        const {passedDate,duration,score} = req.body;
+
+
+        const questions = await questionDB.find({ quizId: quiz._id })
+        if (!questions) statusService.forbidden(res);
+
+
+        const { passedDate, duration, answers } = req.body;
+
+        let score = 0;
+        let correctAmount = 0;
+        let maxWeight = 0;
+
+        console.log("\n\n\n" + questions + "\n");
+        if (answers) {
+            questions.map((quest) => {
+                //console.log(JSON.stringify(quest.options)+'\n')
+                if (quest.type === 'radio') {
+
+
+
+                    let answ = answers.find(item => item.id == quest._id)
+                    //console.log(answ)
+
+                    if (answ) {
+                        let correctOption = quest.options.find(item => item.weight > 0);
+                        maxWeight = Number(maxWeight) + Number(correctOption.weight);
+                        if (answ.options.find(item => item.id === correctOption.id)?.selected) {
+                            correctAmount = correctAmount + 1;
+                            score = Number(score) + Number(correctOption.weight);
+                        }
+                    }
+
+                }
+
+                console.log(quest)
+                console.log(score)
+            })
+        }
 
         const result = await resultsDB.create({
-            quizId:quiz._id,
-            userId:userId,
-            passedDate:passedDate,
-            duration:duration,
-            score:score,
+            quizId: quiz._id,
+            userId: userId,
+            passedDate: passedDate,
+            duration: duration,
+            score: score,
         })
 
-        return res.json(result);
-        
+
+        return res.json({
+            score: (score / maxWeight) * 100,
+            correct: correctAmount,
+        });
+
     } catch (error) {
+        console.log(error)
         return statusService.forbidden(res);
     }
 }
@@ -330,5 +377,5 @@ module.exports = {
     getUser,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
     createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion,
-    startQuiz,setResult
+    startQuiz, setResult
 }
