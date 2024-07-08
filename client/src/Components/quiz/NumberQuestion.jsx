@@ -1,35 +1,81 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
 
-const NumberQuestion = () => {
-  return (
-    <div className="quiz-container">
-            <div className="test-header">
-                <div className="timer">
-                    <span>12:00</span>
+const NumberQuestion = ({ questionsAmount, index, question, onNext, onPrevious, opts, timer }) => {
+
+    const [options, setOptions] = useState([]);
+
+    useEffect(() => {
+        setOptions(prev => {
+            if (opts) return opts;
+
+            return {
+                value: null,
+            }
+
+        })
+    }, [])
+
+    const isOptionEntered = () => {
+        return options.value!=null;
+    }
+
+    const changeOption = (e) => {
+
+        setOptions(prev => {
+            return { value: prev.value = e.target.value }
+        })
+    }
+
+    const showQuestions = () => {
+
+            return (
+
+                <div className="answers">
+                    <p>Enter Your Answer: </p>
+                    <input type='text' placeholder="0" defaultValue={options?.value} onChange={(e)=>changeOption(e)}></input>
                 </div>
+
+            );
+
+    }
+
+
+    return (
+        <div className="quiz-container">
+            <div className="test-header">
+                {
+                    timer ?
+                        (<div className="timer">
+                            <span>{timer}</span>
+                        </div>)
+                        : ''
+                }
                 <p>
-                    <span>1/4</span>
+                    <span>{index}/{questionsAmount}</span>
                 </p>
             </div>
 
-            <div className="question">
+            <div className="question-panel">
                 <div className="question-text">
-                   
+                    {question.text}
                 </div>
-                <img
-                    src="https://static.posters.cz/image/1300/art-photo/%D0%92%D0%BE%D0%BB%D0%BE%D0%B4%D0%B0%D1%80-%D0%BF%D0%B5%D1%80%D1%81%D0%BD%D1%96%D0%B2-gandalf-i132723.jpgs" />
+                {question.image ? <img src={question.image} /> : ''}
             </div>
 
-            <div className="answers">
-                <p>Enter Number: </p>
-                <input type="number" defaultValue="0"/>
-            </div>
+            {showQuestions()}
 
             <div className="buttons">
-                <button className="next">Next</button>
+                {index > 1 ? <button className="prev" onClick={() => onPrevious()}>Back</button> : ''}
+                <button className="next" onClick={() => {
+                    if (question.required) {
+                        if (!isOptionEntered()) return;
+                    }
+                    onNext(question._id, options)
+                }}>{(index >= questionsAmount) ? 'Finish' : 'Next'}</button>
             </div>
         </div>
-  )
+    )
 }
 
 export default NumberQuestion

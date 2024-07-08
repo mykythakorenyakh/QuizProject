@@ -185,9 +185,44 @@ const QuizPage = () => {
     }
     const showQuestion = () => {
 
+        const opts = answers.find(itm => itm.id === questions[current]._id);
         if (questions[current].type === 'radio') {
-            const opts = answers.find(itm => itm.id === questions[current]._id);
             return (<RadioQuestion
+                index={current + 1}
+                questionsAmount={questions.length}
+                question={questions[current]}
+                onNext={next}
+                onPrevious={previuos}
+                opts={opts ? opts : null}
+                timer={timer?secondsToMMSS(timer):null}
+                key={questions[current]._id}
+            />)
+        }else if(questions[current].type === 'check'){
+            return (<CheckQuestion
+                index={current + 1}
+                questionsAmount={questions.length}
+                question={questions[current]}
+                onNext={next}
+                onPrevious={previuos}
+                opts={opts ? opts : null}
+                timer={timer?secondsToMMSS(timer):null}
+                key={questions[current]._id}
+            />)
+        }
+        else if(questions[current].type === 'number'){
+            return (<NumberQuestion
+                index={current + 1}
+                questionsAmount={questions.length}
+                question={questions[current]}
+                onNext={next}
+                onPrevious={previuos}
+                opts={opts ? opts : null}
+                timer={timer?secondsToMMSS(timer):null}
+                key={questions[current]._id}
+            />)
+        }
+        else if(questions[current].type === 'text'){
+            return (<TextQuestion
                 index={current + 1}
                 questionsAmount={questions.length}
                 question={questions[current]}

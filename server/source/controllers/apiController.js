@@ -324,14 +324,12 @@ const setResult = async (req, res) => {
         let correctAmount = 0;
         let maxWeight = 0;
 
-        console.log("\n\n\n" + questions + "\n");
+        //console.log("\n\n\n" + questions + "\n");
+        //console.log(answers[1])
         if (answers) {
             questions.map((quest) => {
                 //console.log(JSON.stringify(quest.options)+'\n')
                 if (quest.type === 'radio') {
-
-
-
                     let answ = answers.find(item => item.id == quest._id)
                     //console.log(answ)
 
@@ -343,11 +341,59 @@ const setResult = async (req, res) => {
                             score = Number(score) + Number(correctOption.weight);
                         }
                     }
+                } else if (quest.type === 'check') {
+                    let answ = answers.find(item => item.id == quest._id)
 
+                    if (answ) {
+                        let correctOptions = quest.options.filter(item => item.weight > 0);
+
+                        correctOptions.map(item => {
+                            maxWeight = Number(maxWeight) + Number(item.weight);
+                        });
+
+                        if (correctOptions.length < answ.options.filter(item => item.selected).length) {
+                            return;
+                        }
+
+
+                        let correctCount = 0;
+
+                        correctOptions.map(item => {
+
+                            if (answ.options.find(a => a.id === item.id)?.selected) {
+                                score = Number(score) + Number(item.weight);
+                                correctCount = Number(correctCount) + 1
+                            }
+                            return item;
+                        })
+                        if (correctCount === correctOptions.length) {
+                            correctAmount = correctAmount + 1;
+                        }
+
+
+                    }
+                } else if (quest.type === 'number') {
+                    let answ = answers.find(item => item.id == quest._id)
+                    if (answ) {
+                        maxWeight = Number(maxWeight) + Number(quest.options.weight);
+                        if (Number(quest.options.text) === Number(answ.options.value)) {
+                            correctAmount = Number(correctAmount) + 1;
+                            score = Number(score) + Number(quest.options.weight);
+
+                        }
+                    }
+                }else if (quest.type === 'text') {
+                    let answ = answers.find(item => item.id == quest._id)
+                    if (answ) {
+                        maxWeight = Number(maxWeight) + Number(quest.options.weight);
+                        if (quest.options.text === answ.options.value) {
+                            correctAmount = Number(correctAmount) + 1;
+                            score = Number(score) + Number(quest.options.weight);
+
+                        }
+                    }
                 }
-
-                console.log(quest)
-                console.log(score)
+                
             })
         }
 

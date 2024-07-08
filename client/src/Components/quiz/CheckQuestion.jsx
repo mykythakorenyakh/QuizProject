@@ -1,41 +1,100 @@
 import React from 'react'
+import { useState,useEffect } from 'react';
 
-const CheckQuestion = () => {
+const CheckQuestion = ({ questionsAmount, index, question, onNext, onPrevious, opts, timer }) => {
+
+
+
+    const [options, setOptions] = useState([]);
+
+    useEffect(() => {
+        setOptions(prev => {
+            if (opts) return opts.options;
+
+            return question.options.map(item => {
+                return {
+                    id: item.id,
+                    selected: false,
+                }
+            });
+
+
+        })
+    }, [])
+
+    const isOptionSelected = () => {
+        return options.find(item => item.selected);
+    }
+
+    const changeOption = (index, e) => {
+
+        setOptions(prev => {
+            return options.map(item => {
+                if (item.id === index) {
+                    return {
+                        id: item.id,
+                        selected: e.target.value==='on'?true:false,
+                    }
+                }
+                return item;
+            })
+
+
+        })
+    }
+
+    const showQuestions = () => {
+        return question.options.map((item, i) => {
+            return (
+                <tr key={i}>
+                    <td className="answer-number">{i + 1}</td>
+                    {item.image ? <td> <img className="answer-image" src={`${item.image}`} />  </td> : ''}
+                    <td className="answer-text">{item.text}</td>
+                    <td className="answer-answer"><input type="checkbox" name={`answer${index}`} defaultChecked={options[i]?.selected} onClick={(e) => changeOption(item.id, e)} /></td>
+                </tr>
+
+            );
+        });
+    }
+
+
     return (
         <div className="quiz-container">
             <div className="test-header">
-                <div className="timer">
-                    <span>12:00</span>
-                </div>
+                {
+                    timer ?
+                        (<div className="timer">
+                            <span>{timer}</span>
+                        </div>)
+                        : ''
+                }
                 <p>
-                    <span>1/4</span>
+                    <span>{index}/{questionsAmount}</span>
                 </p>
             </div>
 
-            <div className="question">
+            <div className="question-panel">
                 <div className="question-text">
-                    
+                    {question.text}
                 </div>
-                <img
-                    src="https://static.posters.cz/image/1300/art-photo/%D0%92%D0%BE%D0%BB%D0%BE%D0%B4%D0%B0%D1%80-%D0%BF%D0%B5%D1%80%D1%81%D0%BD%D1%96%D0%B2-gandalf-i132723.jpgs" />
+                {question.image ? <img src={question.image} /> : ''}
             </div>
             <div className="answers">
                 <table>
-                    <tr>
-                        <td class="answer-number">1</td>
-                        <td class="answer-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore nesciunt pariatur consequatur dolore doloremque repellat natus adipisci nemo dolor quam.</td>
-                        <td class="answer-answer"><input type="checkbox" name="answer" /></td>
-                    </tr>
-                    <tr>
-                        <td class="answer-number">2</td>
-                        <td class="answer-text">This is him?</td>
-                        <td class="answer-answer"><input type="checkbox" name="answer" /></td>
-                    </tr>
+                    <tbody>
+                        {showQuestions()}
+                    </tbody>
                 </table>
             </div>
 
             <div className="buttons">
-                <button className="next">Next</button>
+                {index>1 ? <button className="prev" onClick={() => onPrevious()}>Back</button> : ''}
+                <button className="next" onClick={() => {
+                    if (question.required) {
+                        if (!isOptionSelected()) return;
+                    }
+                    onNext(question._id, options)
+                }}>{(index >= questionsAmount) ? 'Finish' : 'Next'}</button>
             </div>
         </div>
     )
