@@ -417,11 +417,43 @@ const setResult = async (req, res) => {
     }
 }
 
+const getResults = async (req,res)=>{
+    try {
+        const { url } = req.params;
+        if (!url) return statusService.forbidden(res);
+
+        const quiz = await quizDB.findOne({ urlid: url })
+        if (!quiz) statusService.forbidden(res);
+
+        const results = await resultsDB.find({quizId:quiz._id});
+
+        let data = []
+
+
+
+        for(let i=0;i<results.length;i++){
+            
+            let user = await userDB.findOne({_id:results[i].userId})
+            data.push({
+                ...results[i],
+                user,
+            });
+        }
+
+        console.log(data)
+
+        return res.json(data)
+
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
 
 
 module.exports = {
     getUser,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
     createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion,
-    startQuiz, setResult
+    startQuiz, setResult, getResults,
 }
