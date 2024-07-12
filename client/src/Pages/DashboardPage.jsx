@@ -6,6 +6,7 @@ import { RotatingLines } from 'react-loader-spinner'
 import useApiPrivate from '../Hooks/useApiPrivate'
 import { GiConsoleController } from 'react-icons/gi'
 import { FaLock, FaUnlock } from "react-icons/fa";
+import { LineChart } from '@mui/x-charts'
 
 const DashboardPage = () => {
 
@@ -118,6 +119,16 @@ const DashboardPage = () => {
     }
 
 
+    const removeResult=async(id)=>{
+        try {
+            const data = await api.delete(`/api/results/delete/${id}`)
+            console.log(data);
+            Update();
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const showResults = () => {
         if (scores) {
             console.log(scores)
@@ -125,11 +136,66 @@ const DashboardPage = () => {
                 <div className="score" key={item._id}>
                     <div className="email">{item.user.email}</div>
                     <div className="result">{item._doc.score}</div>
-                    <div className="remove">⨯</div>
+                    <div className="remove" onClick={()=>removeResult(item._doc._id)}>⨯</div>
                 </div>
             ))
-        } 
+        }
         return <RotatingLines></RotatingLines>
+    }
+
+
+    const formatDateToDDMM = (date) => {
+        const day = ("0" + date.getDate()).slice(-2);
+        const month = ("0" + (date.getMonth() + 1)).slice(-2);
+        return `${day}/${month}`;
+    }
+
+    const showGraph = () => {
+        const dates = [];
+        const tries = [];
+        const now = new Date();
+        const twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(now.getDate() - 10);
+        
+        for (let d = twoWeeksAgo; d <= now; d.setDate(d.getDate() + 1)) {
+
+            tries.push(scores.filter(item=>formatDateToDDMM(new Date(item._doc.passedDate))===formatDateToDDMM(d))?.length)
+            dates.push(new Date(d));
+            
+        }
+
+        if(tries.filter((item)=>item>0).length===0){
+            return <h2>No Data...</h2>;
+        }
+
+        return (
+            <LineChart
+            xAxis={[
+                {
+                  id: 'Years',
+                  data: dates,
+                  scaleType: 'time',
+                  valueFormatter: (date) => formatDateToDDMM(date),
+                },
+              ]}
+                series={[
+                    {
+                        id:'Tires',
+                        label:'Number of tries',
+                       
+                        data: tries,
+                        
+                        area: true,
+                        showMark: true,
+                        
+                      },
+                ]}
+                height={300}
+                margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
+                grid={{ vertical: false, horizontal: false }}
+                
+            />
+        )
     }
 
     const toQuestions = () => {
@@ -144,7 +210,7 @@ const DashboardPage = () => {
 
         !loading ?
             <div style={style} className="container">
-                <div className="panel">
+                <div className="dash-panel">
                     <div className="initials">
                         <div className="section-title">
                             General
@@ -156,7 +222,7 @@ const DashboardPage = () => {
                         <div className="created">
                             {new Date(quiz.created).toLocaleDateString()}
                         </div>
-                        <div className="link" onClick={() => toQuiz(quiz.urlid)}>
+                        <div className="quiz-link" onClick={() => toQuiz(quiz.urlid)}>
                             {quiz.urlid}
                         </div>
                         <div className="status" onClick={() => changeStatus()}>
@@ -169,10 +235,13 @@ const DashboardPage = () => {
                         <div className="section-title">
                             Attendance
                         </div>
+                        <div className="graph-area">
+                            {showGraph()}
+                        </div>
                     </div>
                 </div>
 
-                <div className="panel">
+                <div className="dash-panel">
 
 
                     <div className="questions">

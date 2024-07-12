@@ -15,6 +15,7 @@ import NumberQuestion from '../Components/quiz/NumberQuestion'
 
 import QuizResult from '../Components/quiz/QuizResult'
 import { useNavigate, useParams } from 'react-router-dom'
+import QuizNotAllowed from '../Components/QuizNotAllowed'
 
 const QuizPage = () => {
 
@@ -48,6 +49,8 @@ const QuizPage = () => {
                 urlid: url,
             })).data
 
+            
+
             setQuiz(prev => data.quiz)
 
             setQuestions(prev => {
@@ -55,6 +58,17 @@ const QuizPage = () => {
             })
             console.log(data.quiz.timeLimit)
             setTimer(prev=>Number(data.quiz.timeLimit)*60)
+
+
+            const res = (await api.get(`/api/results/${url}`)).data
+            
+            
+            if(Number(res.length)>=Number(data.quiz.repeat) || new Date(data.quiz.dateLimit) < Date.now()){
+                
+                setStage(prev=>'notallowed')
+                
+            }
+
 
         } catch (error) {
             navigate('/error')
@@ -262,6 +276,7 @@ const QuizPage = () => {
         if (stage === 'intro') return (<QuizIntro name={quiz.title} timeLimit={quiz.timeLimit} questionAmount={questions.length} onStart={onStart} />)
         else if (stage === 'walkthrough') return showQuestion()
         else if (stage === 'result') return (<QuizResult score={score} correctAmount={correctAmount} questionsAmount={questions.length}></QuizResult>)
+        else if(stage === 'notallowed') return (<QuizNotAllowed/>)
     }
 
     return show()

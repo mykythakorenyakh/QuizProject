@@ -60,7 +60,7 @@ const updateQuiz = async (req, res) => {
     try {
         const quizid = req.params?.id;
         const { title, private, repeat, timeLimit, dateLimit, mixed } = req.body;
-        console.log(req.body)
+    
         const quiz = await quizDB.findOne({ _id: quizid });
 
 
@@ -382,7 +382,7 @@ const setResult = async (req, res) => {
 
                         }
                     }
-                }else if (quest.type === 'text') {
+                } else if (quest.type === 'text') {
                     let answ = answers.find(item => item.id == quest._id)
                     if (answ) {
                         maxWeight = Number(maxWeight) + Number(quest.options.weight);
@@ -393,7 +393,7 @@ const setResult = async (req, res) => {
                         }
                     }
                 }
-                
+
             })
         }
 
@@ -417,7 +417,7 @@ const setResult = async (req, res) => {
     }
 }
 
-const getResults = async (req,res)=>{
+const getResults = async (req, res) => {
     try {
         const { url } = req.params;
         if (!url) return statusService.forbidden(res);
@@ -425,22 +425,22 @@ const getResults = async (req,res)=>{
         const quiz = await quizDB.findOne({ urlid: url })
         if (!quiz) statusService.forbidden(res);
 
-        const results = await resultsDB.find({quizId:quiz._id});
+        const results = await resultsDB.find({ quizId: quiz._id });
 
         let data = []
 
 
 
-        for(let i=0;i<results.length;i++){
-            
-            let user = await userDB.findOne({_id:results[i].userId})
+        for (let i = 0; i < results.length; i++) {
+
+            let user = await userDB.findOne({ _id: results[i].userId })
             data.push({
                 ...results[i],
                 user,
             });
         }
 
-        console.log(data)
+
 
         return res.json(data)
 
@@ -450,10 +450,45 @@ const getResults = async (req,res)=>{
     }
 }
 
+const deleteResult = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = await resultsDB.deleteOne({ _id: id })
+      
+
+        return res.json(data);
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
+
+const getUsersResults = async (req, res) => {
+    try {
+        const { url } = req.params;
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if (!userId) return statusService.forbidden(res);
+        
+        const quiz = await quizDB.findOne({ urlid: url })
+        if (!quiz) statusService.forbidden(res);
+
+        const data = await resultsDB.find({userId:userId,quizId:quiz._id})
+
+
+
+        console.log(data)
+        
+        return res.send(data.length);
+
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
 
 module.exports = {
     getUser,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
     createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion,
-    startQuiz, setResult, getResults,
+    startQuiz, setResult, getResults, deleteResult, getUsersResults
 }

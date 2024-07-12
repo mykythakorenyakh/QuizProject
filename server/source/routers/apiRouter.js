@@ -32,6 +32,9 @@ router.post('/quiz/start',controller.startQuiz)
 router.post('/quiz/result',controller.setResult)
 
 router.get('/results/:url',controller.getResults)
+router.get('/results/:id',controller.getResults)
+router.delete('/results/delete/:id',controller.deleteResult)
+router.get('/results/:url',controller.getUsersResults)
 
 
 module.exports = router;
