@@ -186,16 +186,29 @@ const DashboardPage = () => {
                         data: tries,
                         
                         area: true,
-                        showMark: true,
-                        
+                        showMark: false,
+
                       },
                 ]}
+                
                 height={300}
                 margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
                 grid={{ vertical: false, horizontal: false }}
                 
             />
         )
+    }
+
+    const deleteQuiz = async ()=>{
+        try {
+            if(window.confirm('Are you sure?')){
+                await api.delete(`/api/quiz/delete/${quiz._id}`)   
+                navigate('/editor',{replace:true}) 
+            }
+            
+        } catch (error) {
+            
+        }
     }
 
     const toQuestions = () => {
@@ -277,6 +290,9 @@ const DashboardPage = () => {
                                     ? <input type="checkbox" min="0" className="option-checkbox" checked='on' onClick={(e) => changeMixed(e.target.checked)} />
                                     : <input type="checkbox" min="0" className="option-checkbox" onClick={(e) => changeMixed(e.target.checked)} />
                                 }
+                            </div>
+                            <div className="option">
+                                <div className="delete-quiz-btn" onClick={()=>{deleteQuiz()}}>Delete Quiz</div>
                             </div>
                         </div>
 

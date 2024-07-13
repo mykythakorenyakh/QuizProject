@@ -260,3 +260,13 @@
 .option-checkbox:focus{
     outline: none;
 }
+
+.delete-quiz-btn{
+    display: flex;
+    margin: auto;
+    user-select: none;
+    cursor: pointer;
+    color:#832;
+    font-weight: 600;
+    
+}

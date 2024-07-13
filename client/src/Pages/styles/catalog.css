@@ -7,6 +7,7 @@
     align-self: center;
     padding: 20px;
     margin-top: 120px;
+    margin-bottom: 60px;
     border-radius:12px;
 }
 
@@ -34,12 +35,15 @@
     display: flex;
     flex-direction: row;
     align-items: baseline;
-    border-bottom:1px solid #223;
+    
     width:fit-content;
     padding: 0px 10px;
+
+    border-radius: 30px;
+
 }
 .search-button{
-    font-size:30px;
+    font-size:25px;
     background-color: transparent;
     border:none;
     cursor: pointer;
@@ -47,18 +51,18 @@
 }
 .search-input{
     display: block;
-    width: 200px;
+    width: 100px;
     border:none;
-    font-size:18px;
+    font-size:16px;
     padding: 3px;
-    
+    transition: width 200ms ease-in-out;
 }
 .search-input:focus{
-    outline:none;
+    outline: none;
+    border-bottom:1px solid #223;
+    width:200px;
 }
-.search-button:focus{
 
-}
 .search-button:focus + .search-input{
     display: none;
 }
@@ -86,7 +90,7 @@
     position: absolute;
     background-color: #f9f9f9;
     min-width: 90px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 3px 3px 2px #2239;
     padding: 8px 8px;
     z-index: 1;
 }
@@ -132,26 +136,35 @@
 
     margin: 20px 10px;
 }
-.tests.box .test{
+.test-preview{
+    user-select: none;
+    cursor: pointer;
+}
+.test-preview:hover{
+    outline: 1px solid #1229;
+}
+.tests.box .test-preview{
     display: grid;
     grid-template-areas: 'title title'
                         'status status'
                         'created updated';
 
-    row-gap: 50px;
+
+
+    row-gap: 30px;
     width:170px;
-    height: 150px;
+    height: fit-content;
     box-shadow: 1px 1px 3px #223;
     border-radius: 12px;
     padding: 10px;
 }
-.tests.row .test{
+.tests.row .test-preview{
     display: grid;
                   
     grid-template-areas: 'title status created updated';
       
     width:100%;
-    height: 40px;
+    
     box-shadow: 1px 1px 3px #223;
     border-radius: 12px;
     padding: 10px;
@@ -159,57 +172,65 @@
     justify-items: center;
 }
 
-.test .title{
+.test-preview .title{
     grid-area: title;
-    font-size: 16px;
+    font-size: 18px;
     text-wrap:pretty;
     overflow:none;
+    
 }
-.row .test .title{
+.row .test-preview .title{
     width:150px;
     justify-self: flex-start;
-    text-align: center;
+    text-align: start;
+    padding-left: 10px;
+    
 }
-.test .status{
+.test-preview .status{
     grid-area: status;
     justify-self: center;
 }
-.row .test .status{
+.row .test-preview .status{
     width:150px;
-    justify-self: flex-start;
+    justify-self: start;
+    align-content: start;
     text-align: center;
+    
 }
-.test .created{
+.test-preview .created{
     grid-area: created;
     font-size: 12px;
     color:#2237;
     align-self:flex-end;
+    text-align: left;
     
 }
-.row .test .created{
+.row .test-preview .created{
     width:150px;
     align-self:center;
+    justify-content: center;
     font-size: 14px;
     text-align: center;
+    padding: 0;
 }
-.test .updated{
+.test-preview .updated{
     grid-area: updated;
     font-size: 12px;
     place-self: end;
 }
-.row .test .updated{
+.row .test-preview .updated{
     width:150px;
     align-self:center;
     font-size: 14px;
     text-align: center;
 }
-.test .updated::before{
+.test-preview .updated::before{
     content: '✎';
     font-size: 14px;
     color: #1127;
     margin-right:3px;
 }
-.row .test .updated::before{
+.row .test-preview .updated::before{
     content: '';
 }
 

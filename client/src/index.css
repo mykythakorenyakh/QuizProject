@@ -114,6 +114,7 @@ header{
   border-radius: 12px;
   background-color: #fcfcfc;
   gap:10px;
+  z-index: 2;
 }
 .popup-form h2{
   font-size:24px;
