@@ -30,6 +30,29 @@ const getUser = async (req, res) => {
         return statusService.forbidden(res);
     }
 }
+const updateUser = async (req, res) => {
+    try {
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if (!userId) return statusService.forbidden(res);
+
+        const user = await userDB.findOne({_id:userId});
+
+        const {name,phone,avatar} = req.body;
+
+        name?user.name = name:'';
+        phone?user.phone = phone:'';
+        avatar?user.avatar = avatar:'';
+
+        console.log(name)
+
+        await user.save();
+
+        return res.send('updated')
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
 
 //Quiz CRUD
 const createQuiz = async (req, res) => {
@@ -60,7 +83,7 @@ const updateQuiz = async (req, res) => {
     try {
         const quizid = req.params?.id;
         const { title, private, repeat, timeLimit, dateLimit, mixed } = req.body;
-    
+
         const quiz = await quizDB.findOne({ _id: quizid });
 
 
@@ -449,12 +472,40 @@ const getResults = async (req, res) => {
         return statusService.forbidden(res);
     }
 }
+const getResultsByUserId = async (req, res) => {
+    try {
+
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if (!userId) return statusService.forbidden(res);
+
+        const scores = await resultsDB.find({ userId: userId })
+
+        let set = []
+        for (let i = 0; i < scores.length; i++) {
+            let quiz = await quizDB.findOne({ _id: scores[i].quizId })
+
+            set.push({
+                id: scores[i]._id,
+                title: quiz.title,
+                score: scores[i].score,
+                passedDate: scores[i].passedDate,
+            })
+
+        }
+
+        return res.json(set)
+
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
 
 const deleteResult = async (req, res) => {
     try {
         const { id } = req.params;
         const data = await resultsDB.deleteOne({ _id: id })
-      
+
 
         return res.json(data);
 
@@ -468,16 +519,16 @@ const getUsersResults = async (req, res) => {
         const { url } = req.params;
         const userId = tokenService.verifyRefresh(req.cookies.token)?.id
         if (!userId) return statusService.forbidden(res);
-        
+
         const quiz = await quizDB.findOne({ urlid: url })
         if (!quiz) statusService.forbidden(res);
 
-        const data = await resultsDB.find({userId:userId,quizId:quiz._id})
+        const data = await resultsDB.find({ userId: userId, quizId: quiz._id })
 
 
 
         console.log(data)
-        
+
         return res.send(data.length);
 
 
@@ -487,8 +538,8 @@ const getUsersResults = async (req, res) => {
 }
 
 module.exports = {
-    getUser,
+    getUser,updateUser,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
     createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion,
-    startQuiz, setResult, getResults, deleteResult, getUsersResults
+    startQuiz, setResult, getResults, deleteResult, getUsersResults, getResultsByUserId
 }

@@ -21,7 +21,7 @@
 .selected{
     display: flex;
 }
-.info{
+.account-info{
     display: flex;
     flex-direction: row;
     gap:20px;
@@ -94,16 +94,16 @@
     
 }
 
-.scores{
+.account-scores{
     display: flex;
     flex-direction: column;
     max-height: 200px;
     overflow-x: hidden;
     overflow-y: auto;
     gap:5px;
-    padding: 3px;
+    
 }
-.score{
+.account-score{
     display: grid;
     grid-template-columns: auto auto;
     grid-template-areas: 'author date'
@@ -116,7 +116,7 @@
     align-items: center;
     
 }
-.author{
+.account-score .title{
     grid-area: author;
     font-size: 19px;
     font-weight: 300;
@@ -127,15 +127,12 @@
     text-decoration: underline;
     cursor: pointer;
 }
-.accuracy{
+.account-score .score{
     grid-area: accuracy;
     place-self: end;
     font-size: 20px;
 }
-.accuracy::after{
-    content: '%';
-}
-.date{
+.account-score .date{
     grid-area: date;
     place-self: end;
     font-size: 14px;

@@ -10,6 +10,7 @@ router.use(isAuthorized)
 
 //User CRUD
 router.get('/user',controller.getUser)
+router.put('/user/update',controller.updateUser)
 
 
 //Quiz CRUD
@@ -32,7 +33,7 @@ router.post('/quiz/start',controller.startQuiz)
 router.post('/quiz/result',controller.setResult)
 
 router.get('/results/:url',controller.getResults)
-router.get('/results/:id',controller.getResults)
+router.get('/results',controller.getResultsByUserId)
 router.delete('/results/delete/:id',controller.deleteResult)
 router.get('/results/:url',controller.getUsersResults)
 
