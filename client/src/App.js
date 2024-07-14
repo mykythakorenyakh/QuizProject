@@ -14,6 +14,8 @@ import Header from "./Layouts/Header";
 import DashboardPage from "./Pages/DashboardPage";
 import QuestionsPage from "./Pages/QuestionsPage";
 import QuizPage from "./Pages/QuizPage";
+import VerificationPage from "./Pages/VerificationPage";
+import ActivationPage from "./Pages/ActivationPage";
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
         <Route path='auth'>
           <Route path="login" element={<LoginFrom />} />
           <Route path="register" element={<RegisterForm />} />
+          <Route path="verification" element={<VerificationPage />}></Route>
+          <Route path="activation/:code" element={<ActivationPage></ActivationPage>}></Route>
         </Route>
 
         <Route element={<AuthPersist></AuthPersist>}>

@@ -1,0 +1,25 @@
+
+.verification-board{
+    display: flex;
+    border-radius: 12px; 
+    width:400px;
+    
+    margin:auto;
+    background-color: #fcfcfc;
+    padding: 30px;
+    flex-direction: column;
+}
+.verification-board h2{
+    font-size: 32px;
+
+}
+.verification-board p{
+    margin-top: 20px;
+}
+
+.link{
+    color: #34f;
+    user-select: none;
+    cursor: pointer;
+    margin-top: 5px;
+}

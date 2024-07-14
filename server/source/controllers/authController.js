@@ -1,5 +1,6 @@
 const tokenService = require('../services/tokenService.js')
 const statusService = require('../services/statusService.js')
+const emailService = require('../services/emailService.js')
 
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
@@ -60,8 +61,11 @@ const register = async (req, res) => {
         const url = uuid.v4();
         const activation = await activationDB.create({ userId: newUser._id, url: url })
 
+        const isLegit = emailService.sendVerification(email,'http://localhost:3000/auth/activation/'+url)
 
-        return res.send(`Activate account: http://localhost:8888/auth/activate/${url}`);
+        if(!isLegit) return statusService.forbidden(res)
+
+        return res.send(`Activate account: http://localhost:3000/auth/activation/${url}`);
 
     } catch (error) {
         return statusService.forbidden(res);
