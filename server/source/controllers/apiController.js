@@ -38,16 +38,21 @@ const updateUser = async (req, res) => {
         const user = await userDB.findOne({_id:userId});
 
         const {name,phone,avatar} = req.body;
+        console.log(avatar)
 
         name?user.name = name:'';
         phone?user.phone = phone:'';
-        avatar?user.avatar = avatar:'';
+        
+        if(avatar){
+            user.avatar = imageService.initImage(avatar)
+        }
 
-        console.log(name)
+        
+
 
         await user.save();
 
-        return res.send('updated')
+        return res.json(user);
 
     } catch (error) {
         return statusService.forbidden(res);

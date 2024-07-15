@@ -28,6 +28,7 @@
 }
 
 .avatar{
+    display: flex;
     width: 150px;
     height: 150px;
     border-radius: 50%;
@@ -37,6 +38,31 @@
     
     background-color: #223;
 }
+.avatar img{
+    position: absolute;
+    width:150px;
+    height:150px;
+    transition: all 100ms ease-in-out;
+    object-fit:cover;
+    border-radius: 50%;
+    
+}
+.delete-avatar{
+    display: none;
+    position: relative;
+    margin: auto;
+    
+    fill: #fcfcfc;
+}
+.avatar:hover img{
+    filter: blur(1px);
+}
+.avatar:hover .delete-avatar{
+    display: block;
+}
+
+
+
 .details{
     display: flex;
     flex-direction: column;
@@ -64,6 +90,22 @@
     cursor:pointer;
     user-select: none;
     font-size: 20px;
+}
+
+.details input[type='tel']{
+    min-width:260px;
+}
+
+
+.image-input{
+    position: absolute;
+    display: block;
+    border:1px solid #223;
+    width:150px;
+    height:150px;
+    opacity: 0;
+    cursor: pointer;
+    border-radius: 50%;
 }
 
 

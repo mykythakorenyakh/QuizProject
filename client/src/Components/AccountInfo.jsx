@@ -5,6 +5,9 @@ import useUser from '../Hooks/useUser'
 import useApiPrivate from '../Hooks/useApiPrivate'
 import { RotatingLines } from 'react-loader-spinner'
 
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
+import { IoMdCloseCircleOutline } from 'react-icons/io'
 
 const AccountInfo = () => {
     const api = useApiPrivate()
@@ -12,7 +15,7 @@ const AccountInfo = () => {
     const [email, setEmail] = useState('')
     const nameRef = useRef('')
     const numberRef = useRef('')
-    const avatarRef = useRef('')
+    const [avatar,setAvatar] = useState('')
 
     const [scores, setScores] = useState(null)
 
@@ -22,12 +25,10 @@ const AccountInfo = () => {
 
             const scores = (await api.get('/api/results')).data
 
-
-
             setEmail(data.email);
             nameRef.current = data.name;
             numberRef.current = data.phone;
-            avatarRef.current = data.avatar;
+            setAvatar(data.avatar);
 
             setScores(scores);
 
@@ -50,15 +51,48 @@ const AccountInfo = () => {
 
     }
 
-    const updateAccount = async (name,phone,avatar) => {
-        console.log(name)
-        const data = (await api.put('/api/user/update',{
-            name:name,
-            phone:phone,
-            avatar:avatar,
-        }))
+    const updateAccount = async (name, phone, avatar) => {
+        console.log(phone)
+        const data = (await api.put('/api/user/update', {
+            name: name,
+            phone: phone,
+            avatar: avatar,
+        })).data
+
+
+        setAvatar(data.avatar)
+
     }
 
+    const uploadImage = async (e) => {
+
+
+        console.log(e.target.files[0])
+
+        if(e.target.files[0].size>4194304){
+
+            return;
+        }
+
+        if (e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const base64String = e.target.result;
+
+                updateAccount(null,null,base64String)
+
+                setAvatar(base64String);
+
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+
+    }
+    const imageConvert = (image) => {
+        if (typeof image === 'string') return image;
+        return URL.createObjectURL(image);
+    }
 
 
     return !loading ? (
@@ -66,20 +100,27 @@ const AccountInfo = () => {
 
         <div className="section selected">
             <div className="account-info">
-                {(!avatarRef.current)
-                    ?<img src="./assets/no-image.jpg" className="avatar" />
-                    :<img src={avatarRef.current} className="avatar" />
-                }
+                <div className="avatar-from">
+                    
+                    {(!avatar)
+                        ?  <div className="avatar"> <input type="file" accept="image/*" className='image-input' onChange={(e)=>uploadImage(e)} />  </div>
+                        :<div className="avatar" onClick={()=>updateAccount(null,null,{action:'delete',data:avatar})}> <img src={avatar}/> <IoMdCloseCircleOutline className='delete-avatar' size={50} /> </div>
+                    }
+                </div>
                 <form className="details">
                     <label htmlFor="email">Email</label>
                     <input type="email" name="email" readOnly={true} style={{ border: 'none', fontStyle: 'oblique', marginBottom: '20px', color: '#2239' }} placeholder="Email" defaultValue={email} />
 
                     <label htmlFor="name">Change Name</label>
-                    <input type="text" name="name" placeholder="Name" defaultValue={nameRef.current}  onBlur={(e)=>updateAccount(e.target.value,null,null)} />
+                    <input type="text" name="name" placeholder="Name" defaultValue={nameRef.current} onBlur={(e) => updateAccount(e.target.value, null, null)} />
 
                     <label htmlFor="number">Change Number</label>
-                    <input type="number" name="number" placeholder="Number" defaultValue={nameRef.current} onBlur={(e)=>updateAccount(null,e.target.value,null)} />
 
+                    <PhoneInput
+                        className="phone-input"
+                        placeholder="Enter phone number"
+                        value={numberRef.current}
+                        onChange={(e) => updateAccount(null, e, null)} />
 
                     <button type="submit">Change Password</button>
 
