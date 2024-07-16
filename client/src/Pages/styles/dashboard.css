@@ -85,14 +85,21 @@
 }
 .quiz-link{
     grid-column-start: span 3;
-    text-align: center;
-    text-decoration: underline;
-    color:#119;
-    cursor: pointer;
-    background-color: #2234;
     padding: 10px 10px;
     margin: 10px;
-    border:3px solid #223;
+    display: flex;
+    justify-content: space-between;
+    background-color: #2232;
+    align-items: center;
+    
+}
+.quiz-link-url{
+    text-align: center;
+    text-decoration: underline;
+    cursor: pointer;
+    color:#119;
+    
+    
     
 }
 .status{
@@ -138,6 +145,47 @@
     justify-content: center;
 }
 
+.users{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    padding: 10px;
+    gap:10px;
+    min-height:200px;
+    background-color: #fcfcfc;
+    border-radius: 12px;
+}
+.user-list{
+    display: flex;
+    flex-direction: column;
+    gap:6px;
+    padding: 0 10px;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.user{
+    display: flex;
+    justify-content: space-between;
+    padding: 4px;
+    align-items: center;
+    border:1px solid #2237;
+    border-left:3px solid #119;
+    
+}
+.add-access-btn{
+    display: flex;
+    margin: auto;
+    user-select: none;
+    cursor: pointer;
+    color:#238;
+    font-weight: 600;
+    
+}
+
+
+
+
 .scores{
     display: flex;
     flex-direction: column;
@@ -148,6 +196,7 @@
     background-color: #fcfcfc;
     border-radius: 12px;
 }
+
 .score-list{
     display: flex;
     flex-direction: column;

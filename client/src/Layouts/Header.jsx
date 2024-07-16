@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { RiLogoutBoxRLine } from "react-icons/ri";
 
 import useLogout from '../Hooks/useLogout';
+import { GiClassicalKnowledge, GiGiftOfKnowledge } from 'react-icons/gi';
 
 const Header = () => {
     const logout = useLogout();
@@ -10,7 +11,7 @@ const Header = () => {
         <>
             <header>
                 <div className="logo">
-                    <img src="" />
+                    <GiClassicalKnowledge size={75} ></GiClassicalKnowledge>
                 </div>
                 <div className="navs">
                     <NavLink to='/account' className={({ isActive, isPending }) => isPending ? "nav" : isActive ? "nav index" : "nav"}>

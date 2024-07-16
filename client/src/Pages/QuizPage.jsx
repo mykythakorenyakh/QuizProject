@@ -49,7 +49,16 @@ const QuizPage = () => {
                 urlid: url,
             })).data
 
-            
+
+            if(data.quiz.private){
+            const access = (await api.get(`/api/quiz/haveaccess/${data.quiz._id}`)).data
+           
+                if(!access){
+
+                    return setStage('notallowed')
+                }
+
+            }
 
             setQuiz(prev => data.quiz)
 

@@ -1,0 +1,115 @@
+.search-input{
+    display: block;
+    width: 100px;
+    border:none;
+    font-size:16px;
+    padding: 3px;
+    transition: width 200ms ease-in;
+    border-radius: 0px;
+}
+.search-input:focus{
+    outline: none;
+    border-bottom:1px solid #223;
+    width:250px;
+}
+.search-input:active{
+    outline: none;
+    border-bottom:1px solid #223;
+    width:200px;
+}
+.popup-accesses{
+    display: flex;
+    flex-direction: column;    
+}
+.popup-users{
+
+    background-color: #fcfcfc;
+
+    position: absolute;
+    
+    display: flex;
+    flex-direction: column;
+    width:fit-content;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    gap:6px;
+    
+    
+    padding: 6px;   
+}
+.popup-user{
+    display: grid;
+
+    background-color: #fcfcfc;
+
+    grid-template-areas:'avatar name option' 
+                        'avatar email option';
+
+    border-radius: 12px;
+    box-shadow: 0px 0px 3px #223;
+    padding: 10px;
+
+}
+.popup-user-email
+{
+    grid-area: email;
+    align-self: baseline;
+    justify-content: start;
+    justify-self: start;
+    
+}
+.popup-user-name{
+    grid-area: name;
+    align-self: baseline;
+}
+.popup-user-avatar{
+    grid-area: avatar;
+    align-self: baseline;
+    width:50px;
+    height:50px;
+    object-fit: cover;
+
+    background-color: #223;
+    outline:none;
+
+    justify-self: center;
+
+    grid-row-start: span 3;
+}
+.popup-user-option{
+    display: flex;
+    grid-area: option;
+    width: 50px;
+    height: fit-content;
+    align-self: baseline;
+    justify-content: end;
+    cursor: pointer;
+
+    justify-self: end;
+    grid-row-start: span 2;
+}
+
+
+.popup-accesses{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    gap:5px;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.popup-access{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border:0.5px solid #2239;
+    border-left:3px solid #238;
+    align-items: center;
+    padding: 5px;
+}
+.popup-access-option{
+    cursor: pointer;
+}

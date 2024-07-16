@@ -2,6 +2,7 @@ const quizDB = require('../models/quiz.js')
 const userDB = require('../models/user.js')
 const questionDB = require('../models/question.js')
 const resultsDB = require('../models/results.js')
+const quizAccessDB = require('../models/quizAccess.js')
 
 const { Answer } = require('../models/answer.js')
 
@@ -35,19 +36,19 @@ const updateUser = async (req, res) => {
         const userId = tokenService.verifyRefresh(req.cookies.token)?.id
         if (!userId) return statusService.forbidden(res);
 
-        const user = await userDB.findOne({_id:userId});
+        const user = await userDB.findOne({ _id: userId });
 
-        const {name,phone,avatar} = req.body;
+        const { name, phone, avatar } = req.body;
         console.log(avatar)
 
-        name?user.name = name:'';
-        phone?user.phone = phone:'';
-        
-        if(avatar){
+        name ? user.name = name : '';
+        phone ? user.phone = phone : '';
+
+        if (avatar) {
             user.avatar = imageService.initImage(avatar)
         }
 
-        
+
 
 
         await user.save();
@@ -58,8 +59,90 @@ const updateUser = async (req, res) => {
         return statusService.forbidden(res);
     }
 }
+const searchUsers = async (req, res) => {
+    try {
+
+        const { tag } = req.params;
+
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if (!userId) return statusService.forbidden(res);
+
+        const users = await userDB.find();
+
+        console.log(tag)
+
+        return res.json(users.filter((item) => {
+            return item._id != userId && String(item.email).includes(tag);
+        }))
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
+const getAccessedUsers = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const data = await quizAccessDB.find({ quizId:id })
+
+        let users = []
+        for (let i = 0; i < data.length; i++) {
+            const user = await userDB.findById(data[i].userId)
+            users.push(user)
+        }
+
+        return res.json(users)
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
+const haveAccess = async (req,res)=>{
+    try {
+        const { id } = req.params;
+
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if (!userId) return statusService.forbidden(res);
+
+        const isAdmin = await quizDB.findOne({userId:userId,_id:id})
+        if(isAdmin){
+            return res.send('admin')
+        }
+        console.log(isAdmin)
+
+        const data = await quizAccessDB.find({ quizId:id,userId:userId })
+
+
+        return res.json(data.length);
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
 
 //Quiz CRUD
+const setQuizAccess = async (req, res) => {
+    try {
+        const { userId, quizId, access } = req.body;
+
+        if (access) {
+            const data = await quizAccessDB.create({ quizId, userId });
+            
+
+            return res.json(data)
+        }
+
+        const del = await quizAccessDB.findOneAndDelete({ quizId, userId })
+        return res.json(del)
+
+
+
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+
+}
+
 const createQuiz = async (req, res) => {
     try {
 
@@ -543,8 +626,8 @@ const getUsersResults = async (req, res) => {
 }
 
 module.exports = {
-    getUser,updateUser,
-    createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes,
+    getUser, updateUser, searchUsers, getAccessedUsers, haveAccess,
+    createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes, setQuizAccess,
     createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion,
     startQuiz, setResult, getResults, deleteResult, getUsersResults, getResultsByUserId
 }

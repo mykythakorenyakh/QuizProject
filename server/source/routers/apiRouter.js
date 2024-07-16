@@ -11,9 +11,13 @@ router.use(isAuthorized)
 //User CRUD
 router.get('/user',controller.getUser)
 router.put('/user/update',controller.updateUser)
-
+router.get('/user/search/:tag',controller.searchUsers)
 
 //Quiz CRUD
+router.put('/quiz/access',controller.setQuizAccess)
+router.get('/quiz/accessed/:id',controller.getAccessedUsers)
+router.get('/quiz/haveaccess/:id',controller.haveAccess)
+
 router.post('/quiz/create',controller.createQuiz)
 router.put('/quiz/update/:id',controller.updateQuiz)
 router.delete('/quiz/delete/:id',controller.deleteQuiz)

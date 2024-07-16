@@ -7,6 +7,11 @@ import useApiPrivate from '../Hooks/useApiPrivate'
 import { GiConsoleController } from 'react-icons/gi'
 import { FaLock, FaUnlock } from "react-icons/fa";
 import { LineChart } from '@mui/x-charts'
+import { IoCopy } from 'react-icons/io5'
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import SearchUserAccessPopup from '../Components/SearchUserAccessPopup'
 
 const DashboardPage = () => {
 
@@ -19,6 +24,9 @@ const DashboardPage = () => {
     const [questions, setQuestions] = useState()
 
     const [scores, setScores] = useState([])
+    const [access,setAccess] = useState([])
+
+    const [showUsersPopup,setShowUsersPopup] = useState(false)
 
     const Update = async () => {
 
@@ -31,9 +39,12 @@ const DashboardPage = () => {
 
             const res = (await api.get(`/api/results/${url}`)).data
 
+            const acc = (await api.get(`api/quiz/accessed/${data._id}`)).data
+
             setQiuz(data)
             setQuestions(quests)
             setScores(res)
+            setAccess(acc)
 
         } catch (error) {
             navigate('/editor')
@@ -142,6 +153,18 @@ const DashboardPage = () => {
         }
         return <RotatingLines></RotatingLines>
     }
+    const showUsers = ()=>{
+        if (access) {
+            console.log(access)
+            return access.map((item) => (
+                <div className="user" key={item._id}>
+                    <div className="email">{item.email}</div>
+                    <div className="remove" >⨯</div>
+                </div>
+            ))
+        }
+        return ''
+    }
 
 
     const formatDateToDDMM = (date) => {
@@ -211,6 +234,20 @@ const DashboardPage = () => {
         }
     }
 
+    const copyLink = ()=>{
+        navigator.clipboard.writeText(`${window.location.host}/quiz/${url}`)
+        toast.info('Link Saved', {
+            position: "bottom-center",
+            autoClose: 500,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+    }
+
     const toQuestions = () => {
         navigate(`/questions/${quiz.urlid}`)
     }
@@ -222,6 +259,9 @@ const DashboardPage = () => {
     return (
 
         !loading ?
+            <>
+           
+           {showUsersPopup?<SearchUserAccessPopup accesses={access} setAccesses={setAccess} isShow={showUsersPopup} Show={setShowUsersPopup} quizId={quiz._id}></SearchUserAccessPopup>:''}
             <div style={style} className="container">
                 <div className="dash-panel">
                     <div className="initials">
@@ -235,8 +275,9 @@ const DashboardPage = () => {
                         <div className="created">
                             {new Date(quiz.created).toLocaleDateString()}
                         </div>
-                        <div className="quiz-link" onClick={() => toQuiz(quiz.urlid)}>
-                            {quiz.urlid}
+                        <div className="quiz-link" >
+                            <div className="quiz-link-url" onClick={() => toQuiz(quiz.urlid)}>{quiz.urlid}</div>
+                            <IoCopy size={30} style={{cursor:'pointer'}} onClick={()=>copyLink()}></IoCopy>
                         </div>
                         <div className="status" onClick={() => changeStatus()}>
 
@@ -298,6 +339,18 @@ const DashboardPage = () => {
 
                     </div>
 
+                    {(quiz.private)?
+                    <div className="users">
+                        <div className="section-title">
+                            Access
+                        </div>
+                        <div className="user-list">
+                            {showUsers()}
+                        </div>
+                        <div className="add-access-btn" onClick={()=>setShowUsersPopup(true)}>Add Users</div>
+                    </div>
+
+                    :''}
 
                     <div className="scores">
                         <div className="section-title">
@@ -315,6 +368,7 @@ const DashboardPage = () => {
                 </div>
 
             </div>
+            </>
             : <div style={{ margin: `auto` }}><RotatingLines /></div>
     )
 }
