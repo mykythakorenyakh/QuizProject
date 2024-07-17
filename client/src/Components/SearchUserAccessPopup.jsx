@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useApiPrivate from '../Hooks/useApiPrivate'
 
 import styles from './styles/searchuserpopup.css'
 import { FaCheck, FaUserMinus } from 'react-icons/fa';
+import { IoClose } from 'react-icons/io5';
 
 
 
@@ -11,10 +12,11 @@ const SearchUserAccessPopup = ({ isShow, Show, accesses, setAccesses, quizId }) 
     const api = useApiPrivate();
 
     const [users, setUsers] = useState();
-
+    const [search,setSearch] = useState();
 
 
     const makeResearch = async (tag) => {
+        setSearch(prev=>tag);
         try {
             const data = (await api.get(`/api/user/search/${tag}`)).data
             setUsers(data)
@@ -25,7 +27,7 @@ const SearchUserAccessPopup = ({ isShow, Show, accesses, setAccesses, quizId }) 
 
     }
 
-    const updateAccess = async (userId,access) => {
+    const updateAccess = async (userId, access) => {
         try {
             const updated = (await api.put(`api/quiz/access`, {
                 quizId,
@@ -52,8 +54,8 @@ const SearchUserAccessPopup = ({ isShow, Show, accesses, setAccesses, quizId }) 
                     <div className="popup-user-email">{item.email}</div>
                     <div className="popup-user-option" >
                         {accesses.find(i => i._id === item._id)
-                            ? <FaUserMinus onClick={() => updateAccess(item._id,false)}></FaUserMinus>
-                            : <FaCheck onClick={() => updateAccess(item._id,true)}></FaCheck>
+                            ? <FaUserMinus onClick={() => updateAccess(item._id, false)}></FaUserMinus>
+                            : <FaCheck onClick={() => updateAccess(item._id, true)}></FaCheck>
                         }
                     </div>
                 </div>
@@ -67,7 +69,7 @@ const SearchUserAccessPopup = ({ isShow, Show, accesses, setAccesses, quizId }) 
             return (
                 <div className='popup-access' key={item._id}>
                     <div className="popup-access-email">{item.email}</div>
-                    <div className="popup-access-option" onClick={()=>updateAccess(item._id,false)}>
+                    <div className="popup-access-option" onClick={() => updateAccess(item._id, false)}>
                         <FaUserMinus></FaUserMinus>
                     </div>
                 </div>
@@ -91,7 +93,10 @@ const SearchUserAccessPopup = ({ isShow, Show, accesses, setAccesses, quizId }) 
             <form className='popup-form'>
                 <h2>Add New Members</h2>
                 <div className="popup-user-search-panel">
-                    <input type="text" className='search-input' placeholder='search...' onChange={(e) => makeResearch(e.target.value)} />
+                    <div className="popup-search-area">
+                        <input type="text" className='search-input' placeholder='search...' value={search} onChange={(e) => makeResearch(e.target.value)} />
+                        {(search)?<IoClose size={20} style={{cursor:'pointer'}} onClick={()=>{setSearch(prev=>'');setUsers(null);}}></IoClose>:''}
+                    </div>
 
                     <div className="popup-users" style={{ boxShadow: (users) ? '0px 3px 3px #2239' : 'none' }}>
                         {showUsers()}

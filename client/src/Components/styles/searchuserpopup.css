@@ -113,3 +113,11 @@
 .popup-access-option{
     cursor: pointer;
 }
+
+.popup-search-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+}

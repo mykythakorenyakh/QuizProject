@@ -32,8 +32,8 @@ const QuizPage = () => {
     const [score, setScore] = useState(0)
     const [correctAmount, setCorrectAmount] = useState(0)
 
-    const [timer,setTimer] = useState(0)
-    const [startTimer,setStartTimer] = useState(false)
+    const [timer, setTimer] = useState(0)
+    const [startTimer, setStartTimer] = useState(false)
 
     const navigate = useNavigate()
 
@@ -50,33 +50,20 @@ const QuizPage = () => {
             })).data
 
 
-            if(data.quiz.private){
             const access = (await api.get(`/api/quiz/haveaccess/${data.quiz._id}`)).data
-           
-                if(!access){
+            if (!access) {
 
-                    return setStage('notallowed')
-                }
-
+                return setStage('notallowed')
             }
+
 
             setQuiz(prev => data.quiz)
 
             setQuestions(prev => {
                 return [...data.questions];
             })
-            console.log(data.quiz.timeLimit)
-            setTimer(prev=>Number(data.quiz.timeLimit)*60)
+            setTimer(prev => Number(data.quiz.timeLimit) * 60)
 
-
-            const res = (await api.get(`/api/results/${url}`)).data
-            
-            
-            if(Number(res.length)>=Number(data.quiz.repeat) || new Date(data.quiz.dateLimit) < Date.now()){
-                
-                setStage(prev=>'notallowed')
-                
-            }
 
 
         } catch (error) {
@@ -89,33 +76,30 @@ const QuizPage = () => {
     useEffect(() => {
         getData()
     }, [])
+
+
     useEffect(() => {
-        getData();
-
-    }, [current])
-
-    useEffect(()=>{
-        if(startTimer && stage!='result'){
+        if (startTimer && stage != 'result') {
             console.log(timer)
 
-            if(timer<=0){
-                setStartTimer(prev=>false);
+            if (timer <= 0) {
+                setStartTimer(prev => false);
                 failResult();
-                setStage(prev=>'result');
+                setStage(prev => 'result');
             }
 
             const interval = setInterval(() => {
-                setTimer(prev=>Number(prev-1));
-              }, 1000);
-          
-              return () => clearInterval(interval);
+                setTimer(prev => Number(prev - 1));
+            }, 1000);
+
+            return () => clearInterval(interval);
 
         }
 
-    },[startTimer,timer])
+    }, [startTimer, timer])
 
     const onStart = () => {
-        if(timer!=0){
+        if (timer != 0) {
             setStartTimer(true)
         }
         setStage((prev) => 'walkthrough')
@@ -139,7 +123,7 @@ const QuizPage = () => {
             setLoading(prev => false);
         }
     }
-    const failResult = async()=>{
+    const failResult = async () => {
         const data = (await api.post('/api/quiz/result', {
             urlid: quiz.urlid,
             passedDate: Date.now(),
@@ -196,14 +180,14 @@ const QuizPage = () => {
     }
 
 
-    const secondsToMMSS=(seconds) => {
+    const secondsToMMSS = (seconds) => {
         let minutes = Math.floor(seconds / 60);
         let remainingSeconds = seconds % 60;
-    
+
         // Add leading zero if seconds or minutes are less than 10
         minutes = minutes < 10 ? '0' + minutes : minutes;
         remainingSeconds = remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
-    
+
         return minutes + ':' + remainingSeconds;
     }
     const showQuestion = () => {
@@ -217,10 +201,10 @@ const QuizPage = () => {
                 onNext={next}
                 onPrevious={previuos}
                 opts={opts ? opts : null}
-                timer={timer?secondsToMMSS(timer):null}
+                timer={timer ? secondsToMMSS(timer) : null}
                 key={questions[current]._id}
             />)
-        }else if(questions[current].type === 'check'){
+        } else if (questions[current].type === 'check') {
             return (<CheckQuestion
                 index={current + 1}
                 questionsAmount={questions.length}
@@ -228,11 +212,11 @@ const QuizPage = () => {
                 onNext={next}
                 onPrevious={previuos}
                 opts={opts ? opts : null}
-                timer={timer?secondsToMMSS(timer):null}
+                timer={timer ? secondsToMMSS(timer) : null}
                 key={questions[current]._id}
             />)
         }
-        else if(questions[current].type === 'number'){
+        else if (questions[current].type === 'number') {
             return (<NumberQuestion
                 index={current + 1}
                 questionsAmount={questions.length}
@@ -240,11 +224,11 @@ const QuizPage = () => {
                 onNext={next}
                 onPrevious={previuos}
                 opts={opts ? opts : null}
-                timer={timer?secondsToMMSS(timer):null}
+                timer={timer ? secondsToMMSS(timer) : null}
                 key={questions[current]._id}
             />)
         }
-        else if(questions[current].type === 'text'){
+        else if (questions[current].type === 'text') {
             return (<TextQuestion
                 index={current + 1}
                 questionsAmount={questions.length}
@@ -252,7 +236,7 @@ const QuizPage = () => {
                 onNext={next}
                 onPrevious={previuos}
                 opts={opts ? opts : null}
-                timer={timer?secondsToMMSS(timer):null}
+                timer={timer ? secondsToMMSS(timer) : null}
                 key={questions[current]._id}
             />)
         }
@@ -284,8 +268,8 @@ const QuizPage = () => {
 
         if (stage === 'intro') return (<QuizIntro name={quiz.title} timeLimit={quiz.timeLimit} questionAmount={questions.length} onStart={onStart} />)
         else if (stage === 'walkthrough') return showQuestion()
-        else if (stage === 'result') return (<QuizResult score={score} correctAmount={correctAmount} questionsAmount={questions.length}></QuizResult>)
-        else if(stage === 'notallowed') return (<QuizNotAllowed/>)
+        else if (stage === 'result') return (<QuizResult timePassed={timer ? secondsToMMSS(quiz.timeLimit*60 - timer) : null} timeLimit={quiz.timeLimit} score={score} correctAmount={correctAmount} questionsAmount={questions.length}></QuizResult>)
+        else if (stage === 'notallowed') return (<QuizNotAllowed />)
     }
 
     return show()

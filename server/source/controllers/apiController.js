@@ -69,7 +69,6 @@ const searchUsers = async (req, res) => {
 
         const users = await userDB.find();
 
-        console.log(tag)
 
         return res.json(users.filter((item) => {
             return item._id != userId && String(item.email).includes(tag);
@@ -100,20 +99,41 @@ const getAccessedUsers = async (req, res) => {
 const haveAccess = async (req,res)=>{
     try {
         const { id } = req.params;
+        console.log('lol')
 
         const userId = tokenService.verifyRefresh(req.cookies.token)?.id
         if (!userId) return statusService.forbidden(res);
 
         const isAdmin = await quizDB.findOne({userId:userId,_id:id})
-        if(isAdmin){
-            return res.send('admin')
+        const quiz = await quizDB.findById(id);
+        
+        
+        if(quiz.dateLimit){
+            if(new Date(Date.now()).getDate() > new Date((quiz.dateLimit)).getDate()){
+                return res.json(null)
+            }
         }
-        console.log(isAdmin)
 
-        const data = await quizAccessDB.find({ quizId:id,userId:userId })
+        if(quiz.repeat>0){
+            const userResults = await resultsDB.find({quizId:id,userId:userId})
+            if(Number(userResults.length)>=Number(quiz.repeat)){
+                return res.json(null)
+                
+            }
+        }
 
+        
+        if(isAdmin){
+            return res.json("admin")
+        }
+        
 
-        return res.json(data.length);
+        if(quiz.private){
+            const data = await quizAccessDB.find({ quizId:id,userId:userId })
+            return res.json(data.length);
+        }
+
+        return res.json('allowed');
 
     } catch (error) {
         return statusService.forbidden(res);

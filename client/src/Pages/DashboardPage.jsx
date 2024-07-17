@@ -7,7 +7,7 @@ import useApiPrivate from '../Hooks/useApiPrivate'
 import { GiConsoleController } from 'react-icons/gi'
 import { FaLock, FaUnlock } from "react-icons/fa";
 import { LineChart } from '@mui/x-charts'
-import { IoCopy } from 'react-icons/io5'
+import { IoClose, IoCopy } from 'react-icons/io5'
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -110,7 +110,7 @@ const DashboardPage = () => {
                 ...quiz,
                 dateLimit: newDate
             })).data;
-            setQiuz(prev => { return { ...prev, dateLimit: newDate } })
+            setQiuz(data)
         } catch (error) {
             console.error('Something went wrong')
         }
@@ -139,6 +139,22 @@ const DashboardPage = () => {
             console.error(error)
         }
     }
+    const removeUser = async (id)=>{
+        try {
+            const updated = (await api.put(`api/quiz/access`, {
+                quizId:quiz._id,
+                userId:id,
+                access: false,
+            })).data
+
+            const data = (await api.get(`api/quiz/accessed/${quiz._id}`)).data;
+
+            setAccess(data);
+
+        } catch (error) {
+            alert('error')
+        }
+    }
 
     const showResults = () => {
         if (scores) {
@@ -159,7 +175,7 @@ const DashboardPage = () => {
             return access.map((item) => (
                 <div className="user" key={item._id}>
                     <div className="email">{item.email}</div>
-                    <div className="remove" >⨯</div>
+                    <div className="remove" onClick={()=>removeUser(item._id)}>⨯</div>
                 </div>
             ))
         }
@@ -323,7 +339,8 @@ const DashboardPage = () => {
                             </div>
                             <div className="option">
                                 <div className="option-text">Pass Date Limit</div>
-                                <input type="date" min="0" className="option-date" defaultValue={quiz.dateLimit ? new Date(quiz.dateLimit).toISOString().split('T')[0] : null} onChange={(e) => changeDateLimit(e.target.value)} />
+                                <input type="date" className="option-date" style={{width:(quiz.dateLimit)?'auto':'20px',cursor:'pointer'}} value={quiz.dateLimit ? new Date(quiz.dateLimit).toISOString().split('T')[0] : null} onChange={(e) => changeDateLimit(e.target.value)} />
+                                {(quiz.dateLimit)?<IoClose size={20} onClick={()=>changeDateLimit(null)}></IoClose>:''}
                             </div>
                             <div className="option">
                                 <div className="option-text">Mixed Order</div>
