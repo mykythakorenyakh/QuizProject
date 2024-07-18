@@ -12,6 +12,7 @@ router.use(isAuthorized)
 router.get('/user',controller.getUser)
 router.put('/user/update',controller.updateUser)
 router.get('/user/search/:tag',controller.searchUsers)
+router.put('/user/changepassword',controller.changePassword)
 
 //Quiz CRUD
 router.put('/quiz/access',controller.setQuizAccess)

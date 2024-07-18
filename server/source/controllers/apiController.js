@@ -9,6 +9,7 @@ const { Answer } = require('../models/answer.js')
 const statusService = require('../services/statusService.js')
 const tokenService = require('../services/tokenService.js')
 const uuid = require('uuid')
+const bcrypt = require('bcrypt')
 
 const imageService = require('../services/imageService.js')
 const quiz = require('../models/quiz.js')
@@ -59,6 +60,29 @@ const updateUser = async (req, res) => {
         return statusService.forbidden(res);
     }
 }
+const changePassword = async (req, res) => {
+    try {
+        const {newpass} = req.body;
+
+        console.log(newpass)
+
+        const userId = tokenService.verifyRefresh(req.cookies.token)?.id
+        if (!userId) return statusService.forbidden(res);
+
+        const user = await userDB.findById(userId);
+
+        const encrypted = await bcrypt.hash(newpass, bcrypt.genSaltSync(10))
+
+        user.password = encrypted;
+
+        user.save()
+
+        return res.json('changed')
+    
+    } catch (error) {
+        return statusService.forbidden(res);
+    }
+}
 const searchUsers = async (req, res) => {
     try {
 
@@ -82,7 +106,7 @@ const getAccessedUsers = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const data = await quizAccessDB.find({ quizId:id })
+        const data = await quizAccessDB.find({ quizId: id })
 
         let users = []
         for (let i = 0; i < data.length; i++) {
@@ -96,40 +120,39 @@ const getAccessedUsers = async (req, res) => {
         return statusService.forbidden(res);
     }
 }
-const haveAccess = async (req,res)=>{
+const haveAccess = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log('lol')
 
         const userId = tokenService.verifyRefresh(req.cookies.token)?.id
         if (!userId) return statusService.forbidden(res);
 
-        const isAdmin = await quizDB.findOne({userId:userId,_id:id})
+        const isAdmin = await quizDB.findOne({ userId: userId, _id: id })
         const quiz = await quizDB.findById(id);
-        
-        
-        if(quiz.dateLimit){
-            if(new Date(Date.now()).getDate() > new Date((quiz.dateLimit)).getDate()){
+
+
+        if (quiz.dateLimit) {
+            if (new Date(Date.now()).getDate() > new Date((quiz.dateLimit)).getDate()) {
                 return res.json(null)
             }
         }
 
-        if(quiz.repeat>0){
-            const userResults = await resultsDB.find({quizId:id,userId:userId})
-            if(Number(userResults.length)>=Number(quiz.repeat)){
+        if (quiz.repeat > 0) {
+            const userResults = await resultsDB.find({ quizId: id, userId: userId })
+            if (Number(userResults.length) >= Number(quiz.repeat)) {
                 return res.json(null)
-                
+
             }
         }
 
-        
-        if(isAdmin){
+
+        if (isAdmin) {
             return res.json("admin")
         }
-        
 
-        if(quiz.private){
-            const data = await quizAccessDB.find({ quizId:id,userId:userId })
+
+        if (quiz.private) {
+            const data = await quizAccessDB.find({ quizId: id, userId: userId })
             return res.json(data.length);
         }
 
@@ -147,7 +170,7 @@ const setQuizAccess = async (req, res) => {
 
         if (access) {
             const data = await quizAccessDB.create({ quizId, userId });
-            
+
 
             return res.json(data)
         }
@@ -419,11 +442,11 @@ const startQuiz = async (req, res) => {
         if (!questions) statusService.forbidden(res);
 
 
-        if(quiz.mixed){
-            questions=questions.sort((item)=>{
-                return Math.random()*100-50;
+        if (quiz.mixed) {
+            questions = questions.sort((item) => {
+                return Math.random() * 100 - 50;
             });
-            
+
         }
 
         return res.json({
@@ -646,7 +669,7 @@ const getUsersResults = async (req, res) => {
 }
 
 module.exports = {
-    getUser, updateUser, searchUsers, getAccessedUsers, haveAccess,
+    getUser, updateUser, searchUsers, getAccessedUsers, haveAccess, changePassword,
     createQuiz, updateQuiz, deleteQuiz, getQuiz, getQuizes, setQuizAccess,
     createQuestion, updateQuestion, deleteQuestion, getQuestions, getQuestion,
     startQuiz, setResult, getResults, deleteResult, getUsersResults, getResultsByUserId

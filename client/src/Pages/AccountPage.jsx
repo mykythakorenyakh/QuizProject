@@ -6,9 +6,9 @@ import AccountInfo from '../Components/AccountInfo'
 
 const AccountPage = () => {
   return (
-    <div className="account-container">
+    
       <AccountInfo />
-    </div>
+    
   )
 }
 

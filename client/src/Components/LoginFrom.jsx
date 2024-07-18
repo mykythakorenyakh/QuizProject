@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import style from './styles/login.css'
 import { useNavigate } from 'react-router-dom'
 import api from '../Axios/axios'
@@ -9,6 +9,8 @@ import { useRef } from 'react'
 const LoginFrom = () => {
 
     const {user,setUser} = useUser()
+
+    const [error,setError] = useState('')
 
     const navigate = useNavigate()
 
@@ -48,6 +50,7 @@ const LoginFrom = () => {
         } catch (error) {
 
             console.log(error)
+            setError('Incorrect email or password')
         }
 
     }
@@ -77,7 +80,11 @@ const LoginFrom = () => {
 
             <div className="link" onClick={() => { navigate('/auth/register', { replace: true }) }}>Don't have an account?</div>
 
-
+            {error ?
+                <div className='errors'>
+                    <div className="error"> {error}</div>
+                </div> : ''
+            }
 
         </form>
 
