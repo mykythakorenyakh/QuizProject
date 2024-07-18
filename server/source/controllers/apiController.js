@@ -415,10 +415,16 @@ const startQuiz = async (req, res) => {
 
 
 
-        const questions = await questionDB.find({ quizId: quiz._id })
+        let questions = await questionDB.find({ quizId: quiz._id })
         if (!questions) statusService.forbidden(res);
 
 
+        if(quiz.mixed){
+            questions=questions.sort((item)=>{
+                return Math.random()*100-50;
+            });
+            
+        }
 
         return res.json({
             quiz,
@@ -443,8 +449,6 @@ const setResult = async (req, res) => {
         const userId = tokenService.verifyRefresh(req.cookies.token)?.id
         if (!userId) return statusService.forbidden(res);
 
-
-
         const questions = await questionDB.find({ quizId: quiz._id })
         if (!questions) statusService.forbidden(res);
 
@@ -455,11 +459,8 @@ const setResult = async (req, res) => {
         let correctAmount = 0;
         let maxWeight = 0;
 
-        //console.log("\n\n\n" + questions + "\n");
-        //console.log(answers[1])
         if (answers) {
             questions.map((quest) => {
-                //console.log(JSON.stringify(quest.options)+'\n')
                 if (quest.type === 'radio') {
                     let answ = answers.find(item => item.id == quest._id)
                     //console.log(answ)
@@ -524,7 +525,6 @@ const setResult = async (req, res) => {
                         }
                     }
                 }
-
             })
         }
 
@@ -533,7 +533,7 @@ const setResult = async (req, res) => {
             userId: userId,
             passedDate: passedDate,
             duration: duration,
-            score: score,
+            score: ((score / maxWeight) * 100).toFixed(1),
         })
 
 

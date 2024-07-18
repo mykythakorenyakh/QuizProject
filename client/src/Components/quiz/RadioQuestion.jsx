@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-const RadioQuestion = ({ questionsAmount, index, question, onNext, onPrevious, opts, timer }) => {
+const RadioQuestion = ({ questionsAmount, timeLimit, index, question, onNext, onPrevious, opts, timer }) => {
 
     const [options, setOptions] = useState([]);
+    const [qtimer, setQTimer] = useState()
+
 
     useEffect(() => {
         setOptions(prev => {
@@ -17,7 +19,28 @@ const RadioQuestion = ({ questionsAmount, index, question, onNext, onPrevious, o
 
 
         })
+        setQTimer(timeLimit)
+
     }, [])
+
+    useEffect(() => {
+
+        if (timeLimit) {
+
+            if (qtimer <= 0) {
+                onNext(question._id, options)
+                return
+            }
+
+            const interval = setInterval(() => {
+                setQTimer(prev => Number(prev - 1));
+            }, 1000);
+
+            return () => clearInterval(interval);
+
+        }
+
+    }, [qtimer])
 
     const isOptionSelected = () => {
         return options.find(item => item.selected);
@@ -53,13 +76,14 @@ const RadioQuestion = ({ questionsAmount, index, question, onNext, onPrevious, o
     return (
         <div className="quiz-container">
             <div className="test-header">
-                {
-                    timer?
+                {qtimer ? (<div className="qtimer">
+                    <span>{qtimer}</span>
+                </div>) : ''}
+                {timer ?
                     (<div className="timer">
                         <span>{timer}</span>
                     </div>)
-                    :''
-                }
+                    : ''}
                 <p>
                     <span>{index}/{questionsAmount}</span>
                 </p>
@@ -81,7 +105,7 @@ const RadioQuestion = ({ questionsAmount, index, question, onNext, onPrevious, o
             </div>
 
             <div className="buttons">
-                {index>1 ? <button className="prev" onClick={() => onPrevious()}>Back</button> : ''}
+                {index > 1 ? <button className="prev" onClick={() => onPrevious()}>Back</button> : ''}
                 <button className="next" onClick={() => {
                     if (question.required) {
                         if (!isOptionSelected()) return;

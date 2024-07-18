@@ -196,6 +196,7 @@ const QuizPage = () => {
         if (questions[current].type === 'radio') {
             return (<RadioQuestion
                 index={current + 1}
+                timeLimit={questions[current].timeLimit}
                 questionsAmount={questions.length}
                 question={questions[current]}
                 onNext={next}
