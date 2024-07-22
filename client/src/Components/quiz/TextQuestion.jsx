@@ -1,9 +1,10 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 
-const TextQuestion = ({ questionsAmount, index, question, onNext, onPrevious, opts, timer }) => {
+const TextQuestion = ({ questionsAmount, timeLimit, index, question, onNext, onPrevious, opts, timer }) => {
 
     const [options, setOptions] = useState([]);
+    const [qtimer, setQTimer] = useState()
 
     useEffect(() => {
         setOptions(prev => {
@@ -14,10 +15,29 @@ const TextQuestion = ({ questionsAmount, index, question, onNext, onPrevious, op
             }
 
         })
+        setQTimer(timeLimit)
     }, [])
+    useEffect(() => {
+
+        if (timeLimit) {
+
+            if (qtimer <= 0) {
+                onNext(question._id, options)
+                return
+            }
+
+            const interval = setInterval(() => {
+                setQTimer(prev => Number(prev - 1));
+            }, 1000);
+
+            return () => clearInterval(interval);
+
+        }
+
+    }, [qtimer])
 
     const isOptionEntered = () => {
-        return options.value!=null;
+        return options.value != null;
     }
 
     const changeOption = (e) => {
@@ -29,14 +49,14 @@ const TextQuestion = ({ questionsAmount, index, question, onNext, onPrevious, op
 
     const showQuestions = () => {
 
-            return (
+        return (
 
-                <div className="answers">
+            <div className="answers">
                 <p>Enter Your Answer: </p>
-                <textarea placeholder="Enter here..." defaultChecked={options?.value}  onChange={(e)=>changeOption(e)}></textarea>
+                <textarea placeholder="Enter here..." defaultChecked={options?.value} onChange={(e) => changeOption(e)}></textarea>
             </div>
 
-            );
+        );
 
     }
 
@@ -44,6 +64,9 @@ const TextQuestion = ({ questionsAmount, index, question, onNext, onPrevious, op
     return (
         <div className="quiz-container">
             <div className="test-header">
+                {qtimer ? (<div className="qtimer">
+                    <span>{qtimer}</span>
+                </div>) : ''}
                 {
                     timer ?
                         (<div className="timer">

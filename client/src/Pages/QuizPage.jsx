@@ -208,6 +208,7 @@ const QuizPage = () => {
         } else if (questions[current].type === 'check') {
             return (<CheckQuestion
                 index={current + 1}
+                timeLimit={questions[current].timeLimit}
                 questionsAmount={questions.length}
                 question={questions[current]}
                 onNext={next}
@@ -220,6 +221,7 @@ const QuizPage = () => {
         else if (questions[current].type === 'number') {
             return (<NumberQuestion
                 index={current + 1}
+                timeLimit={questions[current].timeLimit}
                 questionsAmount={questions.length}
                 question={questions[current]}
                 onNext={next}
@@ -232,6 +234,7 @@ const QuizPage = () => {
         else if (questions[current].type === 'text') {
             return (<TextQuestion
                 index={current + 1}
+                timeLimit={questions[current].timeLimit}
                 questionsAmount={questions.length}
                 question={questions[current]}
                 onNext={next}
