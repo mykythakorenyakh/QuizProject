@@ -299,14 +299,14 @@ const DashboardPage = () => {
                                 <div className="edit-icon">✎</div>
                                 <input className="test-title" onBlur={(e) => changeTitle(e.target.value)} defaultValue={quiz.title} />
                             </div>
-                            <div className="created">
+                            <div className="quiz-created">
                                 {new Date(quiz.created).toLocaleDateString()}
                             </div>
                             <div className="quiz-link" >
                                 <div className="quiz-link-url" onClick={() => toQuiz(quiz.urlid)}>{quiz.urlid}</div>
                                 <IoCopy size={30} style={{ cursor: 'pointer' }} onClick={() => copyLink()}></IoCopy>
                             </div>
-                            <div className="status" onClick={() => changeStatus()}>
+                            <div className="quiz-status" onClick={() => changeStatus()}>
 
                                 {quiz.private ? <FaLock className="status-icon" /> : <FaUnlock className="status-icon" />}
                                 <div className="status-text private">{quiz.private ? 'Private' : 'Open'}</div>

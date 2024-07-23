@@ -57,6 +57,7 @@
     padding: 3px;
     transition: width 200ms ease-in-out;
 }
+
 .search-input:focus{
     outline: none;
     border-bottom:1px solid #223;
@@ -116,15 +117,16 @@
     display: flex;
     justify-content: space-between;
 
-    margin: 10px;
-    padding: 0px 10px;
+    margin: 3px 10px;
+    padding: 10px;
+    
     
    
 }
 .row-header.hide{
     display: none;
 }
-.param{
+.catalog-param{
     text-align: center;
     width:150px;
 }
@@ -153,10 +155,14 @@
 
     row-gap: 30px;
     width:170px;
-    height: fit-content;
+    height: 150px;
     box-shadow: 1px 1px 3px #223;
     border-radius: 12px;
     padding: 10px;
+}
+.tests .row{
+    display: flex;
+    flex-direction: column;
 }
 .tests.row .test-preview{
     display: grid;
@@ -183,7 +189,7 @@
     width:150px;
     justify-self: flex-start;
     text-align: start;
-    padding-left: 10px;
+    
     
 }
 .test-preview .status{
@@ -241,8 +247,193 @@
 
 /* Responsive */
 
-@media (max-width:1000px){
-    .container{
-        width: 80%;
+@media (max-width:1100px){
+    .catalog-container{
+        width: 95%;
+        border-radius: 0;
+        margin-top: 100px;
     }
+}
+@media (max-width:800px){
+    .catalog-container{
+        width: 95%;
+        border-radius: 0;
+        margin-top: 100px;
+    }
+    .row .test-preview .title{
+        font-size: 12px;
+    }
+    .row .test-preview .status{
+        font-size: 12px;
+    }
+    .row .test-preview .created{
+        font-size: 12px;
+    }
+    .row .test-preview .updated{
+        font-size: 12px;
+    }
+
+    .test-preview .title{
+        font-size: 14px;
+    }
+    .test-preview .status{
+        font-size: 12px;
+    }
+    .test-preview .created{
+        font-size: 12px;
+    }
+    .test-preview .updated{
+        font-size: 12px;
+    }
+
+    .tests.box .test-preview{
+        width:140px;
+    }
+
+    .row-header .catalog-param{
+        width:150px;
+        font-size: 14px;
+    }
+
+    .tests.box{
+        margin:0 auto;
+    }
+}
+
+@media (max-width:725px){
+    .catalog-container{
+        width: 95%;
+        border-radius: 0;
+        margin-top: 100px;
+    }
+
+    .dropdown p{
+        font-size: 14px;
+    }
+    .create{
+        font-size: 14px;
+    }
+
+    .search-input{
+        font-size: 10px;
+    }
+    .search-input:focus{
+        width:100px;
+    }
+    .search-button{
+        font-size:18px;
+    }
+    
+    .catalog-options{
+        padding: 3px 10px;
+    }
+
+    .row .test-preview .title{
+        width:100px;
+        font-size: 12px;
+    }
+    .row .test-preview .status{
+        width:100px;
+        font-size: 12px;
+    }
+    .row .test-preview .created{
+        width:100px;
+        font-size: 12px;
+    }
+    .row .test-preview .updated{
+        width:100px;
+        font-size: 12px;
+    }
+    .row-header .catalog-param{
+        width:100px;
+        font-size: 14px;
+    }
+
+    .test-preview .created{
+        font-size: 10px;
+    }
+    .test-preview .updated{
+        font-size: 10px;
+    }
+
+    .tests.box .test-preview{
+        width:120px;
+        height: 120px;
+    }
+
+}
+
+@media (max-width:500px){
+    .catalog-container{
+        width: 95%;
+        border-radius: 0;
+        margin-top: 100px;
+    }
+
+    .dropdown p{
+        font-size: 12px;
+    }
+    .create{
+        font-size: 12px;
+    }
+
+    .search-input{
+        font-size: 10px;
+    }
+    .search-input:focus{
+        width:100px;
+    }
+    .search-button{
+        font-size:18px;
+    }
+    
+    .catalog-options{
+        padding: 3px 5px;
+    }
+
+    .row .test-preview .title{
+        width:50px;
+        font-size: 10px;
+    }
+    .row .test-preview .status{
+        width:50px;
+        font-size: 10px;
+        margin: 0;
+    }
+    .row .test-preview .created{
+        width:50px;
+        font-size: 10px;
+        
+    }
+    .row .test-preview .updated{
+        width:50px;
+        font-size: 10px;
+        
+    }
+    .row-header .catalog-param{
+        width:75px;
+        font-size: 12px;
+    }
+
+    .test-preview .title{
+        font-size: 12px;
+    }
+    .test-preview .created{
+        font-size: 8px;
+    }
+    .test-preview .updated{
+        font-size: 8px;
+    }
+
+    .catalog-container{
+        width:100%;
+        padding: 0px;
+    }
+    
+
+    .tests.box .test-preview{
+        width:100px;
+        height: 100px;
+    }
+
 }

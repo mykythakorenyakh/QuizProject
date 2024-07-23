@@ -133,10 +133,10 @@ const EditorPage = () => {
 
                 {(layout === 'row') ?
                     (<div className="row-header">
-                        <div className="param">Name</div>
-                        <div className="param">Status</div>
-                        <div className="param">Created</div>
-                        <div className="param">Updated</div>
+                        <div className="catalog-param">Name</div>
+                        <div className="catalog-param">Status</div>
+                        <div className="catalog-param">Created</div>
+                        <div className="catalog-param">Updated</div>
                     </div>) : ''
                 }
 
