@@ -329,7 +329,7 @@ const DashboardPage = () => {
                             <div className="section-title">
                                 Questions
                             </div>
-                            <div className="horizontal-container">
+                            <div className="to-question-container">
                                 <div className="amount">{questions.length}</div>
                                 <button className="to-questions" onClick={() => toQuestions()}>Go to Questions Editor</button>
                             </div>

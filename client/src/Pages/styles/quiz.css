@@ -153,6 +153,7 @@
     white-space: pre;
     user-select: none;
     text-wrap:wrap;
+    word-break: break-all;
 }
 .question-text:focus{
     outline: none;
@@ -321,4 +322,61 @@ p span{
     width:60px;
     margin-right:15px;
     cursor: pointer;
+}
+
+
+
+@media (max-width:600px){
+    .intro-container{
+        border-radius: 0;
+        min-width: none;
+        height: auto;
+        width: auto;
+        margin-top: 60px;
+    }
+
+
+    .quiz-container{
+        border-radius: 0;
+        min-width: none;
+        height: auto;
+        width: 100%;
+        margin-top: 60px;
+    }
+
+    .results-container{
+        border-radius: 0;
+        min-width: none;
+        height: auto;
+        width: auto;
+
+        margin-top: 60px;
+    }
+    .results-header{
+        border-radius: 0;
+    }
+    .footer{
+        border-radius: 0;
+    }
+
+    .test-header{
+        border-radius: 0;
+    }
+    .buttons{
+        border-radius: 0;
+    }
+    .timer{
+        border-bottom-right-radius: 0%;
+        position:fixed;
+        top:0px;
+        left:0px;
+    }
+    .timer:hover{
+        border-bottom-right-radius: 0%;
+        left:0px;
+        width:60px;
+    }
+
+
+
 }

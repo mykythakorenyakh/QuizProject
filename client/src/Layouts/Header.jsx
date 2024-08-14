@@ -18,7 +18,6 @@ const Header = () => {
                         Account
                     </NavLink>
                     <NavLink to='/editor' className={({ isActive, isPending }) => isPending ? "nav" : isActive ? "nav index" : "nav"}>Editor</NavLink>
-                    <NavLink to='/notifications' className={({ isActive, isPending }) => isPending ? "nav" : isActive ? "nav index" : "nav"}>Notifications</NavLink>
                     <div className="nav" onClick={()=>logout()}><RiLogoutBoxRLine size={30} /></div>
                 </div>
             </header >
